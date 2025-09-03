@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 public class GreenSliderView : MonoBehaviour
 {
-    private ICubePresenter cubePresenter;
+    private ICubeColorPresenter cubePresenter;
     private Slider greenSlider;
 
     void Start()
     {
         greenSlider = GameObject.Find("GreenSlider").GetComponent<Slider>();
 
-        cubePresenter = PresenterDI.cubePresenter;
+        cubePresenter = PresenterDI.cubeColorPresenter;
         greenSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();

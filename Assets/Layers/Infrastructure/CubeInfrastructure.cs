@@ -4,11 +4,10 @@ public class CubeInfrastructure
 {
     private readonly Cube cube= new Cube();
 
-    public void Rotate(float angleX, float angleY, float angleZ)
+    public void Rotate(Vector3 angles)
     {
-        cube.rotation += new Vector3(angleX, angleY, angleZ);
+        cube.rotation = angles;
     }
-
     public Vector3 GetRotation()
     {
         return cube.rotation;

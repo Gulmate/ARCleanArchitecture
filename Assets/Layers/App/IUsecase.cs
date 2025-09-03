@@ -14,3 +14,21 @@ public class ColorEventArgs: EventArgs
         NewColor = newColor;
     }
 }
+
+public class SizeEventArgs : EventArgs
+{
+    public float NewSize { get; set; }
+    public SizeEventArgs(float newSize)
+    {
+        NewSize = newSize;
+    }
+}
+
+public class RotateEventArgs : EventArgs
+{
+    public Vector3 rotation { get; set; }
+    public RotateEventArgs(Vector3 newRotation)
+    {
+        rotation = newRotation;
+    }
+}

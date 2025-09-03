@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class RecolorPresenter : MonoBehaviour, ICubePresenter
+public class RecolorPresenter : MonoBehaviour, ICubeColorPresenter
 {
     private RecolorUsecase _usecase;
     public void AddListenerOnColorChanged(Action<Color> listener)

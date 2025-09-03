@@ -3,14 +3,14 @@ using UnityEngine.UI;
 
 public class BlueSliderView : MonoBehaviour
 {
-    private ICubePresenter cubePresenter;
+    private ICubeColorPresenter cubePresenter;
     private Slider blueSlider;
 
     void Start()
     {
         blueSlider = GameObject.Find("BlueSlider").GetComponent<Slider>();
 
-        cubePresenter = PresenterDI.cubePresenter;
+        cubePresenter = PresenterDI.cubeColorPresenter;
         blueSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();
