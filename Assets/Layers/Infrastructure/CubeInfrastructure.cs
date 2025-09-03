@@ -2,34 +2,38 @@ using UnityEngine;
 
 public class CubeInfrastructure
 {
-    private readonly Cube cube= new Cube();
+    private readonly CubeSize cubeSize=new CubeSize();
+    private readonly CubeColor cubeColor= new CubeColor();
+    private readonly CubeRotation cubeRotation= new CubeRotation();
+
 
     public void Rotate(Vector3 angles)
     {
-        cube.rotation = angles;
+        cubeRotation.angles = angles;
     }
     public Vector3 GetRotation()
     {
-        return cube.rotation;
+
+        return cubeRotation.angles;
     }
 
     public void ReColor(Color newColor)
     {
-        cube.color = newColor;
+        cubeColor.color = newColor;
     }
 
     public Color GetColor()
     {
-        return cube.color;
+        return cubeColor.color;
     }
 
     public void Resize(float newSize)
     {
-        cube.size = newSize;
+        cubeSize.size = newSize;
     }
 
     public float GetSize()
     {
-        return cube.size;
+        return cubeSize.size;
     }
 }
