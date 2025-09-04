@@ -8,15 +8,15 @@ public class ButtonPresenter : MonoBehaviour
 
     [Inject]
     private CubeInfrastructure infrastructure;
-    /*public void AddListenerOnPressed(Action<Color> listener)
+
+    public void AddListenerOnPressed(Action<float, Color, Vector3> onClicked)
     {
-        _usecase.onPressed(listener);
-    }*/
+        _usecase.onPressed(onClicked);
+    }
 
     [Inject]
     void Awake()
     {
-        //CubeInfrastructure infrastructure = new CubeInfrastructure();
         _usecase = new FileUsecase(infrastructure);
     }
 
@@ -29,4 +29,6 @@ public class ButtonPresenter : MonoBehaviour
     {
         _usecase.LoadCube();
     }
+
+    
 }

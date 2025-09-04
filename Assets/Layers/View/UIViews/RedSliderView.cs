@@ -8,6 +8,11 @@ public class RedSliderView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private ButtonPresenter buttonPresenter;
+
     private Slider redSlider;
     private TextMeshProUGUI redValueText;
 
@@ -23,6 +28,18 @@ public class RedSliderView : MonoBehaviour
             redValueText.text = cubePresenter.GetCubeColor().r.ToString("F2");
         }
         );
+        buttonPresenter.AddListenerOnPressed(onClicked);
     }
 
+    public void UpdateSlider(float red)
+    {
+        redSlider.SetValueWithoutNotify(red);
+        redValueText.text = red.ToString("F2");
+    }
+
+    private void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateSlider(newColor.r);
+        
+    }
 }

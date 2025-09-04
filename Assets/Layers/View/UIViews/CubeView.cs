@@ -14,6 +14,10 @@ public class CubeView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Rotation)]
     private readonly ICubeRotationPresenter cubeRotationPresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private readonly ButtonPresenter buttonPresenter;
     private GameObject cube;
 
     private void Start()
@@ -22,6 +26,7 @@ public class CubeView : MonoBehaviour
         cubeColorPresenter.AddListenerOnColorChanged(onColorChanged);
         cubeSizePresenter.AddListenerOnSizeChanged(onSizeChanged);
         cubeRotationPresenter.AddListenerOnRotationChanged(onRotationChanged);
+        buttonPresenter.AddListenerOnPressed(onClicked);
 
     }
 
@@ -37,6 +42,13 @@ public class CubeView : MonoBehaviour
 
     void onRotationChanged(Vector3 newRotation)
     {
+        UpdateCubeRotation(newRotation);
+    }
+
+    void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateCubeColor(newColor);
+        UpdateCubeSize(newSize);
         UpdateCubeRotation(newRotation);
     }
 

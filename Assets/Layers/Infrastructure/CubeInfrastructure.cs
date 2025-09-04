@@ -56,5 +56,6 @@ public class CubeInfrastructure: ICubeInfrastructure
         cubeSize.size = saveCube._size;
         cubeColor.color = new Color(saveCube._colorCords[0], saveCube._colorCords[1], saveCube._colorCords[2], saveCube._colorCords[3]);
         cubeRotation.angles = new Vector3(saveCube._rotationCords[0], saveCube._rotationCords[1], saveCube._rotationCords[2]);
+        Debug.Log(cubeRotation.angles);
     }
 }
