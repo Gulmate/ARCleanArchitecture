@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -8,16 +9,18 @@ public class RedSliderView : MonoBehaviour
     [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
     private Slider redSlider;
+    private TextMeshProUGUI redValueText;
 
     void Start()
     {
         redSlider = GameObject.Find("RedSlider").GetComponent<Slider>();
-
+        redValueText = GameObject.Find("RedValueText").GetComponent<TextMeshProUGUI>();
         redSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();
             newColor.r = value;
             cubePresenter.RecolorCube(newColor);
+            redValueText.text = cubePresenter.GetCubeColor().r.ToString("F2");
         }
         );
     }

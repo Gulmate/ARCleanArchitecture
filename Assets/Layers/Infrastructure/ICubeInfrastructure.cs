@@ -8,4 +8,7 @@ public interface ICubeInfrastructure
     public Color GetColor();
     public void Resize(float newSize);
     public float GetSize();
+    public void Save();
+    public void Load(); 
+
 }

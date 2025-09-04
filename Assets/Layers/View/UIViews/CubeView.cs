@@ -52,7 +52,7 @@ public class CubeView : MonoBehaviour
 
     private void UpdateCubeRotation(Vector3 newRotation)
     {
-        cube.transform.rotation = new Quaternion(newRotation.x,newRotation.y,newRotation.z,0);
+        cube.transform.eulerAngles = newRotation;
     }
 
 }

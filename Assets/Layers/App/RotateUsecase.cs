@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
-
-public class RotateUsecase : IUsecase
+using VContainer;
+public class RotateUsecase : IRotateUsecase
 {
     public EventHandler<RotateEventArgs> OnRotationChanged;
     private readonly ICubeInfrastructure _infrastructure;
 
+    [Inject]
     public RotateUsecase(ICubeInfrastructure infrastructure)
     {
         _infrastructure = infrastructure;
@@ -20,5 +21,13 @@ public class RotateUsecase : IUsecase
     public Vector3 GetCubeRotation()
     {
         return _infrastructure.GetRotation();
+    }
+
+    public void onChange(Action<Vector3> listener)
+    {
+        OnRotationChanged += new System.EventHandler<RotateEventArgs>(delegate (object sender, RotateEventArgs event_arg)
+        {
+            listener(event_arg.rotation);
+        });
     }
 }

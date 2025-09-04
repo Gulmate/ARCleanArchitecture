@@ -1,21 +1,19 @@
-using System;
 using UnityEngine;
+using VContainer;
 
 public class RotationPresenter : MonoBehaviour, ICubeRotationPresenter
 {
-    private RotateUsecase _usecase;
+    private IRotateUsecase _usecase;
 
+    [Inject]
+    public CubeInfrastructure infrastructure;
     public void AddListenerOnRotationChanged(System.Action<Vector3> listener)
     {
-        _usecase.OnRotationChanged += new System.EventHandler<RotateEventArgs>(delegate (object sender, RotateEventArgs event_arg)
-        {
-            listener(event_arg.rotation);
-        });
+        _usecase.onChange(listener);
     }
 
     void Awake()
     {
-        CubeInfrastructure infrastructure = new CubeInfrastructure();
         _usecase = new RotateUsecase(infrastructure);
     }
 
