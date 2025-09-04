@@ -1,22 +1,26 @@
 using UnityEngine;
+using VContainer;
 
 public class CubeView : MonoBehaviour
 {
-    private ICubeColorPresenter cubeColorPresenter;
-    private ICubeSizePresenter cubeSizePresenter;
-    private ICubeRotationPresenter cubeRotationPresenter;
+    [Inject]
+    [Key(PresenterType.Color)]
+    private readonly ICubeColorPresenter cubeColorPresenter;
+
+    [Inject]
+    [Key(PresenterType.Size)]
+    private readonly ICubeSizePresenter cubeSizePresenter;
+
+    [Inject]
+    [Key(PresenterType.Rotation)]
+    private readonly ICubeRotationPresenter cubeRotationPresenter;
     private GameObject cube;
 
     private void Start()
     {
-        cube=GameObject.Find("Cube");
-        cubeColorPresenter = PresenterDI.cubeColorPresenter;
+        cube =GameObject.Find("Cube");
         cubeColorPresenter.AddListenerOnColorChanged(onColorChanged);
-
-        cubeSizePresenter = PresenterDI.cubeSizePresenter;
         cubeSizePresenter.AddListenerOnSizeChanged(onSizeChanged);
-
-        cubeRotationPresenter = PresenterDI.cubeRotationPresenter;
         cubeRotationPresenter.AddListenerOnRotationChanged(onRotationChanged);
 
     }
@@ -33,7 +37,7 @@ public class CubeView : MonoBehaviour
 
     void onRotationChanged(Vector3 newRotation)
     {
-        cube.transform.eulerAngles = newRotation;
+        UpdateCubeRotation(newRotation);
     }
 
     private void UpdateCubeColor(Color newColor)

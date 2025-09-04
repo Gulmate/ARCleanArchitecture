@@ -1,20 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
-
-public class YRotSliderView : MonoBehaviour
+using VContainer;
+public class ZRotSliderView : MonoBehaviour
 {
+    [Inject]
+    [Key(PresenterType.Rotation)]
     private ICubeRotationPresenter cubePresenter;
     private Slider sizeSlider;
 
     void Start()
     {
-        sizeSlider = GameObject.Find("YRotationSlider").GetComponent<Slider>();
+        sizeSlider = GameObject.Find("ZRotationSlider").GetComponent<Slider>();
 
-        cubePresenter = PresenterDI.cubeRotationPresenter;
         sizeSlider.onValueChanged.AddListener((value) =>
         {
             Vector3 newRotation = cubePresenter.GetCubeRotation();
-            newRotation.y = value*360;
+            newRotation.z = value*360;
             cubePresenter.RotateCube(newRotation);
         }
         );

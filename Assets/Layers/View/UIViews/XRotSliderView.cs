@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 public class XRotSliderView : MonoBehaviour
 {
+    [Inject]
+    [Key(PresenterType.Rotation)]
     private ICubeRotationPresenter cubePresenter;
     private Slider sizeSlider;
 
@@ -9,7 +12,6 @@ public class XRotSliderView : MonoBehaviour
     {
         sizeSlider = GameObject.Find("XRotationSlider").GetComponent<Slider>();
 
-        cubePresenter = PresenterDI.cubeRotationPresenter;
         sizeSlider.onValueChanged.AddListener((value) =>
         {
             Vector3 newRotation=cubePresenter.GetCubeRotation();

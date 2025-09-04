@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 public class RedSliderView : MonoBehaviour
 {
+    [Inject]
+    [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
     private Slider redSlider;
 
@@ -10,7 +13,6 @@ public class RedSliderView : MonoBehaviour
     {
         redSlider = GameObject.Find("RedSlider").GetComponent<Slider>();
 
-        cubePresenter = PresenterDI.cubeColorPresenter;
         redSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();

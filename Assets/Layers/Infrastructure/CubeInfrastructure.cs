@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CubeInfrastructure
+public class CubeInfrastructure: ICubeInfrastructure
 {
     private readonly CubeSize cubeSize=new CubeSize();
     private readonly CubeColor cubeColor= new CubeColor();

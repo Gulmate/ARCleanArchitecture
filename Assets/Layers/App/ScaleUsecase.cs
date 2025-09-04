@@ -1,12 +1,11 @@
 using System;
-using UnityEngine;
 
 public class ScaleUsecase: IUsecase
 {
     public EventHandler<SizeEventArgs> OnSizeChanged;
-    private readonly CubeInfrastructure _infrastructure;
+    private readonly ICubeInfrastructure _infrastructure;
 
-    public ScaleUsecase(CubeInfrastructure infrastructure)
+    public ScaleUsecase(ICubeInfrastructure infrastructure)
     {
         _infrastructure = infrastructure;
     }

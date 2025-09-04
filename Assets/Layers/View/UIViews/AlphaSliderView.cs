@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 public class AlphaSliderView : MonoBehaviour
 {
-
+    [Inject]
+    [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
     private Slider alphaSlider;
 
@@ -10,7 +12,6 @@ public class AlphaSliderView : MonoBehaviour
     {
         alphaSlider = GameObject.Find("AlphaSlider").GetComponent<Slider>();
 
-        cubePresenter = PresenterDI.cubeColorPresenter;
         alphaSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();

@@ -4,9 +4,9 @@ using UnityEngine;
 public class RotateUsecase : IUsecase
 {
     public EventHandler<RotateEventArgs> OnRotationChanged;
-    private readonly CubeInfrastructure _infrastructure;
+    private readonly ICubeInfrastructure _infrastructure;
 
-    public RotateUsecase(CubeInfrastructure infrastructure)
+    public RotateUsecase(ICubeInfrastructure infrastructure)
     {
         _infrastructure = infrastructure;
     }

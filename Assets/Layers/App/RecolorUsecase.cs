@@ -4,9 +4,9 @@ using UnityEngine;
 public class RecolorUsecase: IUsecase
 {
     public EventHandler<ColorEventArgs> OnColorChanged;
-    private readonly CubeInfrastructure _infrastructure;
+    private readonly ICubeInfrastructure _infrastructure;
 
-    public RecolorUsecase(CubeInfrastructure infrastructure)
+    public RecolorUsecase(ICubeInfrastructure infrastructure)
     {
         _infrastructure = infrastructure;
     }
