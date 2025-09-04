@@ -7,6 +7,11 @@ public class GreenSliderView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private ButtonPresenter buttonPresenter;
+
     private Slider greenSlider;
     private TextMeshProUGUI greenValueText;
 
@@ -22,5 +27,18 @@ public class GreenSliderView : MonoBehaviour
             greenValueText.text = cubePresenter.GetCubeColor().g.ToString("F2");
         }
         );
+        buttonPresenter.AddListenerOnPressed(onClicked);
+    }
+
+    public void UpdateSlider(float green)
+    {
+        greenSlider.SetValueWithoutNotify(green);
+        greenValueText.text = green.ToString("F2");
+    }
+
+    private void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateSlider(newColor.g);
+
     }
 }

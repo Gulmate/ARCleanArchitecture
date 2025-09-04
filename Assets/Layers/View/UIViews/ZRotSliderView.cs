@@ -7,6 +7,11 @@ public class ZRotSliderView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Rotation)]
     private ICubeRotationPresenter cubePresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private ButtonPresenter buttonPresenter;
+
     private Slider sizeSlider;
     private TextMeshProUGUI ZValueText;
     void Start()
@@ -21,5 +26,17 @@ public class ZRotSliderView : MonoBehaviour
             ZValueText.text = (value * 360).ToString("F2");
         }
         );
+        buttonPresenter.AddListenerOnPressed(onClicked);
+    }
+
+    public void UpdateSlider(float zRot)
+    {
+        sizeSlider.SetValueWithoutNotify(zRot / 360);
+        ZValueText.text = zRot.ToString("F2");
+    }
+
+    private void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateSlider(newRotation.z);
     }
 }

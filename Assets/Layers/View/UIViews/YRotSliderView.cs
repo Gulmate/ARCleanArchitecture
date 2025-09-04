@@ -8,6 +8,11 @@ public class YRotSliderView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Rotation)]
     private ICubeRotationPresenter cubePresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private ButtonPresenter buttonPresenter;
+
     private Slider sizeSlider;
     private TextMeshProUGUI YValueText;
     void Start()
@@ -22,5 +27,17 @@ public class YRotSliderView : MonoBehaviour
             YValueText.text = (value * 360).ToString("F2");
         }
         );
+        buttonPresenter.AddListenerOnPressed(onClicked);
+    }
+
+    public void UpdateSlider(float yRot)
+    {
+        sizeSlider.SetValueWithoutNotify(yRot / 360);
+        YValueText.text = yRot.ToString("F2");
+    }
+
+    private void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateSlider(newRotation.y);
     }
 }

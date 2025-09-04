@@ -7,6 +7,11 @@ public class AlphaSliderView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private ButtonPresenter buttonPresenter;
+
     private Slider alphaSlider;
     private TextMeshProUGUI alphaValueText;
 
@@ -23,5 +28,18 @@ public class AlphaSliderView : MonoBehaviour
             alphaValueText.text = cubePresenter.GetCubeColor().a.ToString("F2");
         }
         );
+        buttonPresenter.AddListenerOnPressed(onClicked);
+    }
+
+    public void UpdateSlider(float alpha)
+    {
+        alphaSlider.SetValueWithoutNotify(alpha);
+        alphaValueText.text = alpha.ToString("F2");
+    }
+
+    private void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateSlider(newColor.a);
+
     }
 }

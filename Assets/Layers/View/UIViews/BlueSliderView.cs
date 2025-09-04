@@ -8,6 +8,11 @@ public class BlueSliderView : MonoBehaviour
     [Inject]
     [Key(PresenterType.Color)]
     private ICubeColorPresenter cubePresenter;
+
+    [Inject]
+    [Key(PresenterType.Button)]
+    private ButtonPresenter buttonPresenter;
+
     private Slider blueSlider;
     private TextMeshProUGUI blueValueText;
 
@@ -23,5 +28,18 @@ public class BlueSliderView : MonoBehaviour
             blueValueText.text = cubePresenter.GetCubeColor().b.ToString("F2");
         }
         );
+        buttonPresenter.AddListenerOnPressed(onClicked);
+    }
+
+    public void UpdateSlider(float blue)
+    {
+        blueSlider.SetValueWithoutNotify(blue);
+        blueValueText.text = blue.ToString("F2");
+    }
+
+    private void onClicked(float newSize, Color newColor, Vector3 newRotation)
+    {
+        UpdateSlider(newColor.b);
+
     }
 }
