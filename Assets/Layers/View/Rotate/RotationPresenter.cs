@@ -1,12 +1,12 @@
 using UnityEngine;
 using VContainer;
 
-public class RotationPresenter : MonoBehaviour, ICubeRotationPresenter
+public class RotationPresenter : MonoBehaviour
 {
     private IRotateUsecase _usecase;
 
     [Inject]
-    public CubeInfrastructure infrastructure;
+    public CubeTransformator infrastructure;
     public void AddListenerOnRotationChanged(System.Action<Vector3> listener)
     {
         _usecase.onChange(listener);

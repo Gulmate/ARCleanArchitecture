@@ -5,10 +5,10 @@ using VContainer;
 public class RecolorUsecase: IRecolorUsecase
 {
     public EventHandler<ColorEventArgs> OnColorChanged;
-    private readonly ICubeInfrastructure _infrastructure;
+    private readonly ICubeTransformator _infrastructure;
 
     [Inject]
-    public RecolorUsecase(ICubeInfrastructure infrastructure)
+    public RecolorUsecase(ICubeTransformator infrastructure)
     {
         _infrastructure = infrastructure;
     }

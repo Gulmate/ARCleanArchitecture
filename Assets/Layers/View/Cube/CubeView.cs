@@ -5,15 +5,15 @@ public class CubeView : MonoBehaviour
 {
     [Inject]
     [Key(PresenterType.Color)]
-    private readonly ICubeColorPresenter cubeColorPresenter;
+    private readonly RecolorPresenter cubeColorPresenter;
 
     [Inject]
     [Key(PresenterType.Size)]
-    private readonly ICubeSizePresenter cubeSizePresenter;
+    private readonly ResizePresenter cubeSizePresenter;
 
     [Inject]
     [Key(PresenterType.Rotation)]
-    private readonly ICubeRotationPresenter cubeRotationPresenter;
+    private readonly RotationPresenter cubeRotationPresenter;
 
     [Inject]
     [Key(PresenterType.Button)]

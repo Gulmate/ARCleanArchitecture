@@ -7,7 +7,10 @@ public class ButtonPresenter : MonoBehaviour
     private IFileUsecase _usecase;
 
     [Inject]
-    private CubeInfrastructure infrastructure;
+    private CubeTransformator transformator;
+
+    [Inject]
+    private readonly CubeFileHandler fileHandler;
 
     public void AddListenerOnPressed(Action<float, Color, Vector3> onClicked)
     {
@@ -17,7 +20,7 @@ public class ButtonPresenter : MonoBehaviour
     [Inject]
     void Awake()
     {
-        _usecase = new FileUsecase(infrastructure);
+        _usecase = new FileUsecase(fileHandler, transformator);
     }
 
     public void SaveCube()

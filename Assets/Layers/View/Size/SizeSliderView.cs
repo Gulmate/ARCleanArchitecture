@@ -6,7 +6,7 @@ public class SizeSliderView : MonoBehaviour
 {
     [Inject]
     [Key(PresenterType.Size)]
-    private ICubeSizePresenter cubePresenter;
+    private ResizePresenter cubePresenter;
 
     [Inject]
     [Key(PresenterType.Button)]

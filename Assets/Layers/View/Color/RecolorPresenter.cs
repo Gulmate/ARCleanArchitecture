@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 using VContainer;
 
-public class RecolorPresenter : MonoBehaviour, ICubeColorPresenter
+public class RecolorPresenter : MonoBehaviour
 {
-    private IRecolorUsecase _usecase;
+    private RecolorUsecase _usecase;
 
     [Inject]
-    private CubeInfrastructure infrastructure;
+    private CubeTransformator infrastructure;
     public void AddListenerOnColorChanged(Action<Color> listener)
     {
         _usecase.onChange(listener);

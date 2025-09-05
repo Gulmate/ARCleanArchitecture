@@ -4,10 +4,10 @@ using VContainer;
 public class ScaleUsecase: IScaleUsecase
 {
     public EventHandler<SizeEventArgs> OnSizeChanged;
-    private readonly ICubeInfrastructure _infrastructure;
+    private readonly ICubeTransformator _infrastructure;
 
     [Inject]
-    public ScaleUsecase(ICubeInfrastructure infrastructure)
+    public ScaleUsecase(ICubeTransformator infrastructure)
     {
         _infrastructure = infrastructure;
     }

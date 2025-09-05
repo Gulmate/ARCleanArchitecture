@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface ICubeInfrastructure
+public interface ICubeTransformator
 {
     public void Rotate(Vector3 angles);
     public Vector3 GetRotation();
@@ -8,7 +8,4 @@ public interface ICubeInfrastructure
     public Color GetColor();
     public void Resize(float newSize);
     public float GetSize();
-    public void Save();
-    public void Load(); 
-
 }

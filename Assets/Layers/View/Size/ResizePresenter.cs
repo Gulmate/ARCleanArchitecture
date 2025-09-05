@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 using VContainer;
 
-public class ResizePresenter : MonoBehaviour, ICubeSizePresenter
+public class ResizePresenter : MonoBehaviour
 {
     private IScaleUsecase _usecase;
     [Inject]
-    public CubeInfrastructure infrastructure;
+    public CubeTransformator infrastructure;
 
-    public void AddListenerOnSizeChanged(System.Action<float> listener)
+    public void AddListenerOnSizeChanged(Action<float> listener)
     {
         _usecase.AddListener(listener);
     }

@@ -4,10 +4,10 @@ using VContainer;
 public class RotateUsecase : IRotateUsecase
 {
     public EventHandler<RotateEventArgs> OnRotationChanged;
-    private readonly ICubeInfrastructure _infrastructure;
+    private readonly ICubeTransformator _infrastructure;
 
     [Inject]
-    public RotateUsecase(ICubeInfrastructure infrastructure)
+    public RotateUsecase(ICubeTransformator infrastructure)
     {
         _infrastructure = infrastructure;
     }
