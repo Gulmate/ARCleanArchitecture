@@ -10,8 +10,7 @@ public class CubeScope : LifetimeScope
         builder.RegisterComponentInHierarchy<SizeSliderView>();
         builder.RegisterComponentInHierarchy<ColorPanelView>();
         builder.RegisterComponentInHierarchy<RotatePanelView>();
-        builder.RegisterComponentInHierarchy<CubeSaveView>();
-        builder.RegisterComponentInHierarchy<CubeLoadView>();
+        builder.RegisterComponentInHierarchy<ButtonView>();
 
         //Register presenters with keys while also register them as their implemented interfaces
         builder.RegisterComponentOnNewGameObject<ResizePresenter>(Lifetime.Scoped, "Resizepresenter").Keyed(PresenterType.Size);

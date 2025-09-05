@@ -13,19 +13,23 @@ public class RotatePanelView : MonoBehaviour
     [Key(PresenterType.Button)]
     private ButtonPresenter buttonPresenter;
 
+    [SerializeField]
     private Slider xSlider;
+    [SerializeField]
     private TextMeshProUGUI ZValueText;
 
+    [SerializeField]
     private Slider ySlider;
+    [SerializeField]
     private TextMeshProUGUI YValueText;
 
+    [SerializeField]
     private Slider zSlider;
+    [SerializeField]
     private TextMeshProUGUI XValueText;
 
     void Start()
     {
-        xSlider = GameObject.Find("XRotationSlider").GetComponent<Slider>();
-        XValueText = GameObject.Find("XValueText").GetComponent<TextMeshProUGUI>();
         xSlider.onValueChanged.AddListener((value) =>
         {
             Vector3 newRotation = cubePresenter.GetCubeRotation();
@@ -35,8 +39,7 @@ public class RotatePanelView : MonoBehaviour
         }
         );
 
-        ySlider = GameObject.Find("YRotationSlider").GetComponent<Slider>();
-        YValueText = GameObject.Find("YValueText").GetComponent<TextMeshProUGUI>();
+
         ySlider.onValueChanged.AddListener((value) =>
         {
             Vector3 newRotation = cubePresenter.GetCubeRotation();
@@ -46,8 +49,7 @@ public class RotatePanelView : MonoBehaviour
         }
         );
 
-        zSlider = GameObject.Find("ZRotationSlider").GetComponent<Slider>();
-        ZValueText = GameObject.Find("ZValueText").GetComponent<TextMeshProUGUI>();
+
         zSlider.onValueChanged.AddListener((value) =>
         {
             Vector3 newRotation = cubePresenter.GetCubeRotation();

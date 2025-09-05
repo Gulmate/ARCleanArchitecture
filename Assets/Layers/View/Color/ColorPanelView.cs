@@ -13,22 +13,28 @@ public class ColorPanelView : MonoBehaviour
     [Key(PresenterType.Button)]
     private ButtonPresenter buttonPresenter;
 
+    [SerializeField]
     private Slider redSlider;
+    [SerializeField]
     private TextMeshProUGUI redValueText;
 
+    [SerializeField]
     private Slider greenSlider;
+    [SerializeField]
     private TextMeshProUGUI greenValueText;
 
+    [SerializeField]
     private Slider blueSlider;
+    [SerializeField]
     private TextMeshProUGUI blueValueText;
 
+    [SerializeField]
     private Slider alphaSlider;
+    [SerializeField]
     private TextMeshProUGUI alphaValueText;
 
     void Start()
     {
-        redSlider = GameObject.Find("RedSlider").GetComponent<Slider>();
-        redValueText = GameObject.Find("RedValueText").GetComponent<TextMeshProUGUI>();
         redSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();
@@ -37,8 +43,7 @@ public class ColorPanelView : MonoBehaviour
             redValueText.text = cubePresenter.GetCubeColor().r.ToString("F2");
         }
         );
-        greenSlider = GameObject.Find("GreenSlider").GetComponent<Slider>();
-        greenValueText = GameObject.Find("GreenValueText").GetComponent<TextMeshProUGUI>();
+
         greenSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();
@@ -47,8 +52,7 @@ public class ColorPanelView : MonoBehaviour
             greenValueText.text = cubePresenter.GetCubeColor().g.ToString("F2");
         }
         );
-        blueSlider = GameObject.Find("BlueSlider").GetComponent<Slider>();
-        blueValueText = GameObject.Find("BlueValueText").GetComponent<TextMeshProUGUI>();
+
         blueSlider.onValueChanged.AddListener((value) =>
         {
             Color newColor = cubePresenter.GetCubeColor();
@@ -57,8 +61,7 @@ public class ColorPanelView : MonoBehaviour
             blueValueText.text = cubePresenter.GetCubeColor().b.ToString("F2");
         }
         );
-        alphaSlider = GameObject.Find("AlphaSlider").GetComponent<Slider>();
-        alphaValueText = GameObject.Find("AlphaValueText").GetComponent<TextMeshProUGUI>();
+
 
         alphaSlider.onValueChanged.AddListener((value) =>
         {

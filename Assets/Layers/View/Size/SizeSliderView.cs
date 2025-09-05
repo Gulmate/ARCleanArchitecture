@@ -12,13 +12,13 @@ public class SizeSliderView : MonoBehaviour
     [Key(PresenterType.Button)]
     private ButtonPresenter buttonPresenter;
 
+    [SerializeField]
     private Slider sizeSlider;
+    [SerializeField]
     private TextMeshProUGUI sizeValueText;
 
     void Start()
     {
-        sizeSlider = GameObject.Find("SizeSlider").GetComponent<Slider>();
-        sizeValueText = GameObject.Find("ScaleValueText").GetComponent<TextMeshProUGUI>();
         sizeSlider.onValueChanged.AddListener((value) =>
         {
             cubePresenter.ResizeCube(value);
