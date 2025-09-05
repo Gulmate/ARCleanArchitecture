@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using VContainer;
-public class RotateUsecase : IRotateUsecase
+public class RotateUsecase
 {
     public EventHandler<RotateEventArgs> OnRotationChanged;
     private readonly ICubeTransformator _infrastructure;

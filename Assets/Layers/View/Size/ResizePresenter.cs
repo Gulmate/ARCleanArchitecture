@@ -4,7 +4,7 @@ using VContainer;
 
 public class ResizePresenter : MonoBehaviour
 {
-    private IScaleUsecase _usecase;
+    private ScaleUsecase _usecase;
     [Inject]
     public CubeTransformator infrastructure;
 

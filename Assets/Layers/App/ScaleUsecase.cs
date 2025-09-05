@@ -1,7 +1,7 @@
 using System;
 using VContainer;
 
-public class ScaleUsecase: IScaleUsecase
+public class ScaleUsecase
 {
     public EventHandler<SizeEventArgs> OnSizeChanged;
     private readonly ICubeTransformator _infrastructure;

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using VContainer;
 
-public class RecolorUsecase: IRecolorUsecase
+public class RecolorUsecase
 {
     public EventHandler<ColorEventArgs> OnColorChanged;
     private readonly ICubeTransformator _infrastructure;

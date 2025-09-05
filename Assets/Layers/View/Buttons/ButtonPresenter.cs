@@ -4,7 +4,7 @@ using VContainer;
 
 public class ButtonPresenter : MonoBehaviour
 {
-    private IFileUsecase _usecase;
+    private FileUsecase _usecase;
 
     [Inject]
     private CubeTransformator transformator;

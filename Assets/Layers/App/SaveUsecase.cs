@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using VContainer;
 
-public class FileUsecase : IFileUsecase
+public class FileUsecase
 {
     public event EventHandler<ButtonEventArgs> OnButtonPressed;
     private readonly CubeFileHandler fileService;

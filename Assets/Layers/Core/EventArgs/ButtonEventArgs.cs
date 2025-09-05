@@ -1,13 +1,6 @@
 using System;
 using UnityEngine;
 
-public interface IFileUsecase
-{
-    public void SaveCube();
-    public void LoadCube();
-    public void onPressed(Action<float, Color, Vector3> onClicked);
-}
-
 public class ButtonEventArgs : EventArgs
 {
     public Color color { get; set; }
@@ -21,3 +14,4 @@ public class ButtonEventArgs : EventArgs
         size = newSize;
     }
 }
+

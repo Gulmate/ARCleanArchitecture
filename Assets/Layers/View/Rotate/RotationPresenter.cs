@@ -3,7 +3,7 @@ using VContainer;
 
 public class RotationPresenter : MonoBehaviour
 {
-    private IRotateUsecase _usecase;
+    private RotateUsecase _usecase;
 
     [Inject]
     public CubeTransformator infrastructure;
