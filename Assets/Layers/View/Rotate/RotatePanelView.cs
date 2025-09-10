@@ -32,9 +32,7 @@ public class RotatePanelView : MonoBehaviour
     {
         xSlider.onValueChanged.AddListener((value) =>
         {
-            Vector3 newRotation = cubePresenter.GetCubeRotation();
-            newRotation.x = value * 360;
-            cubePresenter.RotateCube(newRotation);
+            float x = cubePresenter.ChangeX(value);
             XValueText.text = (value * 360).ToString("F2");
         }
         );
@@ -42,9 +40,7 @@ public class RotatePanelView : MonoBehaviour
 
         ySlider.onValueChanged.AddListener((value) =>
         {
-            Vector3 newRotation = cubePresenter.GetCubeRotation();
-            newRotation.y = value * 360;
-            cubePresenter.RotateCube(newRotation);
+            float y = cubePresenter.ChangeY(value);
             YValueText.text = (value * 360).ToString("F2");
         }
         );
@@ -52,9 +48,7 @@ public class RotatePanelView : MonoBehaviour
 
         zSlider.onValueChanged.AddListener((value) =>
         {
-            Vector3 newRotation = cubePresenter.GetCubeRotation();
-            newRotation.z = value * 360;
-            cubePresenter.RotateCube(newRotation);
+            float z = cubePresenter.ChangeZ(value);
             ZValueText.text = (value * 360).ToString("F2");
         }
         );

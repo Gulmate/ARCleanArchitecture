@@ -27,4 +27,28 @@ public class RotationPresenter : MonoBehaviour
         return _usecase.GetCubeRotation();
     }
 
+    public float ChangeX(float value)
+    {
+        var rotation = GetCubeRotation();
+        rotation[0] = value * 360;
+        RotateCube(rotation); ;
+        return rotation[0];
+    }
+
+    public float ChangeY(float value)
+    {
+        var rotation = GetCubeRotation();
+        rotation[1] = value * 360;
+        RotateCube(rotation); ;
+        return rotation[1];
+    }
+
+    public float ChangeZ(float value)
+    {
+        var rotation = GetCubeRotation();
+        rotation[2] = value * 360;
+        RotateCube(rotation); ;
+        return rotation[2];
+    }
+
 }

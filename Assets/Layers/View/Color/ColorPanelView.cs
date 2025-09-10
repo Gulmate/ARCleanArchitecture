@@ -37,40 +37,28 @@ public class ColorPanelView : MonoBehaviour
     {
         redSlider.onValueChanged.AddListener((value) =>
         {
-            Color newColor = cubePresenter.GetCubeColor();
-            newColor.r = value;
-            cubePresenter.RecolorCube(newColor);
-            redValueText.text = cubePresenter.GetCubeColor().r.ToString("F2");
-        }
-        );
+            var r = cubePresenter.ChangeRed(value);
+            redValueText.text = r.ToString("F2");
+        });
 
         greenSlider.onValueChanged.AddListener((value) =>
         {
-            Color newColor = cubePresenter.GetCubeColor();
-            newColor.g = value;
-            cubePresenter.RecolorCube(newColor);
-            greenValueText.text = cubePresenter.GetCubeColor().g.ToString("F2");
-        }
-        );
+            var g = cubePresenter.ChangeGreen(value);
+            greenValueText.text = g.ToString("F2");
+        });
 
         blueSlider.onValueChanged.AddListener((value) =>
         {
-            Color newColor = cubePresenter.GetCubeColor();
-            newColor.b = value;
-            cubePresenter.RecolorCube(newColor);
-            blueValueText.text = cubePresenter.GetCubeColor().b.ToString("F2");
-        }
-        );
-
+            var b = cubePresenter.ChangeBlue(value);
+            blueValueText.text = b.ToString("F2");
+        });
 
         alphaSlider.onValueChanged.AddListener((value) =>
         {
-            Color newColor = cubePresenter.GetCubeColor();
-            newColor.a = value;
-            cubePresenter.RecolorCube(newColor);
-            alphaValueText.text = cubePresenter.GetCubeColor().a.ToString("F2");
-        }
-        );
+            var a = cubePresenter.ChangeAlpha(value);
+            alphaValueText.text = a.ToString("F2");
+        });
+
         buttonPresenter.AddListenerOnPressed(onClicked);
     }
 
