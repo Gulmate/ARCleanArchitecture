@@ -3,7 +3,7 @@ using VContainer;
 public class AuthenticationService : IAutentication
 {
     [Inject]
-    private readonly ILoggerService _logger;
+    private readonly IFileHandlerService _logger;
     public void Login(string username, string password)
     {
         DummyLoginCheck(username, password);
@@ -18,11 +18,11 @@ public class AuthenticationService : IAutentication
     {
         if (username != "Admin" || password != "admin")
         {
-            _logger.Log("Login Attempt failed: Wrong username or password");
+            _logger.SaveLog("Login Attempt failed: Wrong username or password");
         }
         else
         {
-            _logger.Log("Login Attempt failed: Error 500 Internal server error");
+            _logger.SaveLog("Login Attempt failed: Error 500 Internal server error");
         }
     }
 }

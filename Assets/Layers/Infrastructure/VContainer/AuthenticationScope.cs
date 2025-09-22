@@ -7,7 +7,7 @@ public class AuthenticationScope : LifetimeScope
     {
         builder.RegisterComponentInHierarchy<LoginView>();
 
-        builder.Register<LoggerService>(Lifetime.Scoped).AsImplementedInterfaces();
+        builder.Register<FileHandlerService>(Lifetime.Scoped).AsImplementedInterfaces();
         builder.Register<AuthenticationService>(Lifetime.Scoped).AsImplementedInterfaces();
         
 

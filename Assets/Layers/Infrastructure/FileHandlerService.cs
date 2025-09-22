@@ -2,24 +2,24 @@ using System;
 using System.IO;
 using UnityEngine;
 
-public class LoggerService:ILoggerService
+public class FileHandlerService : IFileHandlerService
 {
+    private readonly string logPath = Application.dataPath + "/Logs/log";
     DateTime localDate;
-    private readonly string path= Application.dataPath + "/Logs/log";
-    public void Log(string message)
+
+    public void SaveLog(string message)
     {
         localDate = DateTime.Now;
-        string savePath = path + localDate.ToString("yyyy-MM-dd") + ".txt";
-        message= DateTime.Now.ToString("HH:mm:ss")+ " - " + message;
+        string savePath = logPath + localDate.ToString("yyyy-MM-dd") + ".txt";
+        message= localDate.ToString("HH:mm:ss") + " - " + message;
         if (File.Exists(savePath))
         {
             File.AppendAllText(savePath, message + "\n");
         }
         else
         {
-            File.WriteAllText(savePath, message+ "\n");
+            File.WriteAllText(savePath, message + "\n");
         }
-            
     }
 
     public void LoadLogs()
@@ -38,4 +38,5 @@ public class LoggerService:ILoggerService
             Debug.Log("No log files found.");
         }
     }
+
 }
