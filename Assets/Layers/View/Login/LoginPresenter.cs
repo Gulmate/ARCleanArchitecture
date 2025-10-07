@@ -18,4 +18,10 @@ public class LoginPresenter : MonoBehaviour
     {
         _loginUseCase.Login(username, password);
     }
+
+    public void Register(string username, string password)
+    {
+        RegisterUseCase registerUseCase = new RegisterUseCase(_autentication);
+        registerUseCase.Register(username, password);
+    }
 }

@@ -9,6 +9,7 @@ public class LoginView : MonoBehaviour
     [SerializeField] private TMP_InputField userNameField;
     [SerializeField] private TMP_InputField passwordField;
     [SerializeField] private Button loginButton;
+    [SerializeField] private Button registerButton;
 
     [Inject]
     private readonly LoginPresenter _loginPresenter;
@@ -18,8 +19,11 @@ public class LoginView : MonoBehaviour
         loginButton.onClick.AddListener(() =>
         {
             _loginPresenter.Login(userNameField.text, passwordField.text);
-        }
-        );
+        });
+        registerButton.onClick.AddListener(() =>
+        {
+            _loginPresenter.Register(userNameField.text, passwordField.text);
+        });
     }
 
 }
