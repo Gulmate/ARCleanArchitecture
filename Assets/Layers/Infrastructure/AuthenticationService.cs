@@ -11,7 +11,7 @@ public class AuthenticationService : IAutentication
 
     public void Register(string username, string password)
     {
-        throw new System.NotImplementedException();
+        DummyRegisterCheck(username, password);
     }
 
     private void DummyLoginCheck(string username, string password)
@@ -25,4 +25,9 @@ public class AuthenticationService : IAutentication
             _logger.SaveLog("Login Attempt failed: Error 500 Internal server error");
         }
     }
+
+    private void DummyRegisterCheck(string username, string password)
+    {
+        _logger.SaveLog("Register Attempt failed: Error 500 Internal server error");
+    }   
 }
