@@ -23,7 +23,7 @@ public class WebSocketClientService
         }
     }
     private WebSocketClient _webSocketClient;
-
+    public WebSocketState State => Instance._webSocketClient != null && Instance._webSocketClient.WebSocket != null ? Instance._webSocketClient.State : WebSocketState.Closed;
     public event DisplayMessageHandler DisplayDebugMessage;
     public event ConnectionStatusHandler ConnectionStatusChanged;
     public event MessageHandler MessageReceived;
@@ -33,6 +33,29 @@ public class WebSocketClientService
 
     public void SendMessage(string message) => Instance.InstanceSendMessage(message);
     
+    public void SendMessage(DTOMessageWrapper dTOMessage)
+    {
+        string message = DTOMessageWrapper.ConvertToMessage(dTOMessage);
+        SendMessage(message);
+    }
+    public void SendMessageToServer(DTOMessageWrapper dTOMessage)
+    {
+        DTOMessageWrapper dTOMessageToSend = new DTOMessageWrapper
+        {
+            Type = (int)WebSocketEnums.MessageType.ToServer,
+            Payload = dTOMessage
+        };
+        SendMessage(dTOMessageToSend);
+    }
+    public void SendMessageToClient(DTOMessageWrapper dTOMessage)
+    {
+        DTOMessageWrapper dTOMessageToSend = new DTOMessageWrapper
+        {
+            Type = (int)WebSocketEnums.MessageType.ToOtherClient,
+            Payload = dTOMessage
+        };
+        SendMessage(dTOMessageToSend);
+    }
     private void InstanceConnect(string serverIp, int serverPort)
     {
         if (_webSocketClient == null)

@@ -21,7 +21,7 @@ public class WebSocketConnectPresenter: MonoBehaviour
 
     void Start()
     {
-        _usecase.onWebSocketStateChange(OnConnectionStateChanged);
+        _usecase.OnWebSocketStateChange(OnConnectionStateChanged);
     }
     public int Connect(string serverIP, string serverPort)
     {

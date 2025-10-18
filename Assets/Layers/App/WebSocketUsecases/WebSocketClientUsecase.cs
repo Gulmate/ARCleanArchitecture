@@ -29,30 +29,19 @@ public class WebSocketClientUsecase
     }
     public void SendMessage(DTOMessageWrapper dTOMessage)
     {
-        string message = new DTOMessageWrapperUsecase().ConvertToMessage(dTOMessage);
-        SendMessage(message);
+        _webSocketClientService.SendMessage(dTOMessage);
     }
     public void SendMessageToServer(DTOMessageWrapper dTOMessage)
     {
-        DTOMessageWrapper dTOMessageToSend = new DTOMessageWrapper
-        {
-            Type = (int)WebSocketEnums.MessageType.ToServer,
-            Payload = dTOMessage
-        };
-        SendMessage(dTOMessageToSend);
+        _webSocketClientService.SendMessageToServer(dTOMessage);
     }
 
     public void SendMessageToClient(DTOMessageWrapper dTOMessage)
     {
-        DTOMessageWrapper dTOMessageToSend = new DTOMessageWrapper
-        {
-            Type = (int)WebSocketEnums.MessageType.ToOtherClient,
-            Payload = dTOMessage
-        };
-        SendMessage(dTOMessageToSend);
+        _webSocketClientService.SendMessageToClient(dTOMessage);
     }
 
-    public void onWebSocketStateChange(Action<WebSocketState> listener)
+    public void OnWebSocketStateChange(Action<WebSocketState> listener)
     {
         _webSocketClientService.ConnectionStatusChanged += delegate (WebSocketState state)
         {

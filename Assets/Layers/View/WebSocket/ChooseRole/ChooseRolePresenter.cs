@@ -1,43 +1,43 @@
 using System;
 using UnityEngine;
 using System.Net.WebSockets;
+using VContainer;
 
 public delegate void ConnectionStatusChangedHandler(WebSocketEnums.ConnectionStatus status, WebSocketEnums.ConnectionType connectionType);
 public class ChooseRolePresenter : MonoBehaviour
 {
     public event ConnectionStatusChangedHandler ConnectionStatusChanged;
-    [SerializeField]
-    //TODO:
-    private WebSocketStreamingClientScript _webSocketStreamingClient = WebSocketStreamingClientScript.Instance;
-    //TODO: ADD events for connection status change
 
+    private WebSocketStreamingClientUsecase _usecase;
 
+    [Inject]
+    private WebSocketStreamingClientService _service;
+    [Inject]
+    private WebSocketClientService _webSocketClientService;
+
+    [Inject]
+    void Awake()
+    {
+        _usecase = new WebSocketStreamingClientUsecase(_service, _webSocketClientService);
+    }
     public void JoinAsViewer()
     {
-        throw new NotImplementedException();
-        _webSocketStreamingClient.ConnecToStreaming(WebSocketEnums.ConnectionType.Viewer);
+        _usecase.ConnectToStreamingAsViewer();
     }
 
     internal void JoinAsStreamer()
     {
-        throw new NotImplementedException();
-        _webSocketStreamingClient.ConnecToStreaming(WebSocketEnums.ConnectionType.Streamer);
+        _usecase.ConnectToStreamingAsStreamer();
     }
     void Start()
     {
-
-        if (_webSocketStreamingClient == null)
-        {
-            _webSocketStreamingClient = WebSocketStreamingClientScript.Instance;
-        }
-
-        OnConnectionStatusChanged(_webSocketStreamingClient.ConnectionToStreamingStatus);
-        _webSocketStreamingClient.ConnectionStatusChanged += OnConnectionStatusChanged;
+        OnConnectionStatusChanged(_usecase.GetCurrentConnectionStatus());
+        _usecase.OnConnectionStatusChanged(OnConnectionStatusChanged);
     }
     private void OnConnectionStatusChanged(WebSocketEnums.ConnectionStatus status)
     {
         // Notify subscribers about the connection status change
-        ConnectionStatusChanged?.Invoke(status, _webSocketStreamingClient.CurrentConnectionType);
+        ConnectionStatusChanged?.Invoke(status, _usecase.GetCurrentConnectionType());
 
     }
 }
