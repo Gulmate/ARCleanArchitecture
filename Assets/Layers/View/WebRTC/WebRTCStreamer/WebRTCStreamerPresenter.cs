@@ -5,67 +5,63 @@ using UnityEngine;
 using VContainer;
 using Unity.WebRTC;
 
+
+public delegate void JobDone();
 public class WebRTCStreamerPresenter : MonoBehaviour
 {
 
-    private WebSocketStreamingClientUsecase _usecase;
+    public event JobDone ConnectionStabilized;
+
+    private WebRTCStreamingUsecase _usecase;
+
 
     [Inject]
-    private WebSocketStreamingClientService _service;
+    private WebSocketStreamingClientService _webSocketStreamingClientService;
     [Inject]
     private WebSocketClientService _webSocketClientService;
+    [Inject]
+    private WebRTCService _webRTCService;
+    [Inject]
+    private WebRTCMessageHandlerService _webRTCMessageHandlerService;
 
     [Inject]
     void Awake()
     {
-        _usecase = new WebSocketStreamingClientUsecase(_service, _webSocketClientService);
+        _usecase = new WebRTCStreamingUsecase(_webSocketClientService, _webSocketStreamingClientService, _webRTCMessageHandlerService, _webRTCService);
     }
 
     void Start()
     {
-        _refreshButton.onClick.AddListener(Refresh);
-        _callButton.onClick.AddListener(Call);
-        _startStreamButton.onClick.AddListener(OnStartStream);
-        _webSocketStreamingClient.PaierUpDone += Connect;
+        _usecase.PairUpDone(Connect);
+        
     }
     void Update()
     {
         if (_ConnectionDone)
         {
-            if (_webRTCManager.SignalingState == RTCSignalingState.Stable)
+            if (_usecase.GetSignalingState() == RTCSignalingState.Stable)
             {
                 _ConnectionDone = false;
-                _maintext.SetText("Connected to:" + _viewerId);
-                _startStreamButton.interactable = true;
+                ConnectionStabilized?.Invoke();
             }
         }
     }
-    public void Connect()
+    //After pairing up with viewer, connect WebRTC
+    private void Connect()
     {
-        _webRTCManager = WebRTCManager.Instance;
-        _webRTCManager.Negotiate();
-        _webRTCManager.Connected += (() => _ConnectionDone = true);
+        _usecase.OnConnectionDone(() => _ConnectionDone = true);
+        _usecase.Connect();
     }
 
-    private WebSocketClientScript _webSocketClient = WebSocketClientScript.Instance;
-    private WebSocketStreamingClientScript _webSocketStreamingClient = WebSocketStreamingClientScript.Instance;
-    private WebRTCManager _webRTCManager = WebRTCManager.Instance;
     private bool _ConnectionDone = false;
+    private string _viewerId = "";
     public List<string> Refresh()
     {
-        if (_webSocketClient != null)
-        {
-            return GetViewers().Result; 
-        }
-        else
-        {
-            Debug.LogError("WebSocketClientScript instance is null.");
-            return null;
-        }
+        return GetViewers().Result; 
     }
     private async Task<List<string>> GetViewers()
     {
-        var answ = _webSocketStreamingClient.GetPossibleViewersTask();
+        var answ = _usecase.GetPossibleViewersTask();
         var result = await answ;
         if (result != null)
         {
@@ -88,7 +84,8 @@ public class WebRTCStreamerPresenter : MonoBehaviour
 
         if (uint.TryParse(viewerID, out uint viewerIdInt))
         {
-            _webSocketStreamingClient.PairUp(viewerIdInt);
+            _usecase.PairUp(viewerIdInt);
+            _viewerId = viewerID;
         }
         else
         {
@@ -101,6 +98,10 @@ public class WebRTCStreamerPresenter : MonoBehaviour
 
         var videoStreamTrack = camera.CaptureStreamTrack(1280, 720);
         //var videoStreamTrack = _camera.CaptureStreamTrack(640, 360);
-        _webRTCManager.SendVideoTrack(videoStreamTrack);
+        _usecase.SendVideoTrack(videoStreamTrack);
+    }
+    public string GetViewerId()
+    {
+        return _viewerId;
     }
 }

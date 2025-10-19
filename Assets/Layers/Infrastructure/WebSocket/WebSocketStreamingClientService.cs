@@ -19,24 +19,32 @@ public class WebSocketStreamingClientService
 
 
     private readonly WebSocketStreamingClient _webSocketStreamingClient = new WebSocketStreamingClient();
-    public WebSocketEnums.ConnectionStatus Status => Instance._webSocketStreamingClient.ConnectionToStreamingStatus;
-    public WebSocketEnums.ConnectionType Type => Instance._webSocketStreamingClient.ConnectionType;
+    public WebSocketEnums.ConnectionStatus Status => _instance._webSocketStreamingClient.ConnectionToStreamingStatus;
+    public WebSocketEnums.ConnectionType Type => _instance._webSocketStreamingClient.ConnectionType;
     private static WebSocketStreamingClientService _instance;
-    public WebSocketStreamingClientService Instance
+
+    private WebSocketClientService _webSocketClientService;
+    public void SetServices(WebSocketClientService webSocketClientService)
     {
-        get
+        if (_instance == null)
         {
-            if (_instance == null)
-            {
-                _instance = new WebSocketStreamingClientService();
-            }
-            return _instance;
+            _instance = new WebSocketStreamingClientService();
+            _instance._webSocketClientService = webSocketClientService;
         }
     }
-    public WebSocketClientService WebSocketClientService { get; set; }
 
-    //_webSocketClientScript.MessageReceived += OnWebSocketMessageRecived;
-    public void ConnectToStreaming(WebSocketEnums.ConnectionType connectionType) => Instance.InstanceConnectToStreaming(connectionType);
+    //_webSocketClientService.MessageReceived += OnWebSocketMessageRecived;
+    public void ConnectToStreaming(WebSocketEnums.ConnectionType connectionType) => _instance.InstanceConnectToStreaming(connectionType);
+    public void SendWebSocketMessageToPairClient(string message, int messageID) => _instance.InstanceSendWebSocketMessageToPairClient(message, messageID);
+    public async Task<List<uint>> GetPossibleViewersTask() => await _instance.InstanceGetPossibleViewersTask();
+    public void PairUp(uint viewerId) => _instance.InstancePairUp(viewerId);
+    public void ListenToPairUpDone(System.Action listener)
+    {
+        _instance.PaierUpDone += delegate
+        {
+            listener();
+        };
+    }
     private void InstanceConnectToStreaming(WebSocketEnums.ConnectionType connectionType)
     {
         if (connectionType == WebSocketEnums.ConnectionType.None)
@@ -44,7 +52,7 @@ public class WebSocketStreamingClientService
             DisplayDebugMessage?.Invoke($"ConnectionType is None. Cannot connect.");
             return;
         }
-        if ((WebSocketClientService.State == WebSocketState.Open) &&
+        if ((_webSocketClientService.State == WebSocketState.Open) &&
                 (
                 Status == WebSocketEnums.ConnectionStatus.NotConnected ||
                 Status == WebSocketEnums.ConnectionStatus.ConnectionFailed
@@ -68,11 +76,11 @@ public class WebSocketStreamingClientService
                 Message = $"Requesting connection as {connectionType}",
                 Payload = null
             };
-            WebSocketClientService.SendMessageToServer(dTOMessage);
-            WebSocketClientService.MessageReceived += OnMessageReceived;
+            _webSocketClientService.SendMessageToServer(dTOMessage);
+            _webSocketClientService.MessageReceived += OnMessageReceived;
         }
 
-        else if ((WebSocketClientService.State != WebSocketState.Open))
+        else if ((_webSocketClientService.State != WebSocketState.Open))
         {
             DisplayDebugMessage?.Invoke($"Not Connected to WebSocketServer");
             return;
@@ -93,9 +101,9 @@ public class WebSocketStreamingClientService
 
     private void OnMessageReceived(string message)
     {
-        if (WebSocketClientService.State != WebSocketState.Open)
+        if (_webSocketClientService.State != WebSocketState.Open)
         {
-            DisplayDebugMessage?.Invoke($"WebSocket is not open. Current state: {WebSocketClientService.State}");
+            DisplayDebugMessage?.Invoke($"WebSocket is not open. Current state: {_webSocketClientService.State}");
             return;
         }
         if (Status == WebSocketEnums.ConnectionStatus.ConnectionRequested)
@@ -191,11 +199,11 @@ public class WebSocketStreamingClientService
     }
 
     //The messageID should be bigger than 100, as the basic message types are below that
-    public void SendWebSocketMessageToPairClient(string message, int messageID)
+    private void InstanceSendWebSocketMessageToPairClient(string message, int messageID)
     {
-        if (WebSocketClientService.State != WebSocketState.Open)
+        if (_webSocketClientService.State != WebSocketState.Open)
         {
-            DisplayDebugMessage?.Invoke($"WebSocket is not open. Current state: {WebSocketClientService.State}");
+            DisplayDebugMessage?.Invoke($"WebSocket is not open. Current state: {_webSocketClientService.State}");
             return;
         }
         if (Status != WebSocketEnums.ConnectionStatus.Connected)
@@ -262,9 +270,9 @@ public class WebSocketStreamingClientService
                 return;
         }
 
-        WebSocketClientService.SendMessageToClient(dTOMessage);
+        _webSocketClientService.SendMessageToClient(dTOMessage);
     }
-    public async Task<List<uint>> GetPossibleViewersTask()
+    private async Task<List<uint>> InstanceGetPossibleViewersTask()
     {
         if (Type != WebSocketEnums.ConnectionType.Streamer)
         {
@@ -303,7 +311,7 @@ public class WebSocketStreamingClientService
 
         OkAnswerRecived += OnOkAnswerReceived;
 
-        WebSocketClientService.SendMessageToServer(new DTOMessageWrapper
+        _webSocketClientService.SendMessageToServer(new DTOMessageWrapper
         {
             Type = (int)WebSocketEnums.ToServerMessageType.ToGetViewrs,
             Message = _webSocketStreamingClient.IDOnServer.ToString(),
@@ -315,7 +323,7 @@ public class WebSocketStreamingClientService
         return await tcs.Task;
     }
 
-    public void PairUp(uint viewerId)
+    private void InstancePairUp(uint viewerId)
     {
         if (Type != WebSocketEnums.ConnectionType.Streamer)
         {
@@ -343,6 +351,6 @@ public class WebSocketStreamingClientService
             Type = (int)WebSocketEnums.ToOtherClientMessageType.ToViewer,
             Payload = wrapper2
         };
-        WebSocketClientService.SendMessageToClient(dTOMessage);
+        _webSocketClientService.SendMessageToClient(dTOMessage);
     }
 }

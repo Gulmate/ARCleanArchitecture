@@ -11,7 +11,7 @@ public class WebSocketStreamingClientUsecase
     {
         this._service = webSocketStreamingClientService;
         this._webSocketClientService = webSocketClientService;
-        webSocketStreamingClientService.WebSocketClientService = this._webSocketClientService;
+        webSocketStreamingClientService.SetServices( this._webSocketClientService);
     }
     public void ConnectToStreamingAsStreamer()
     {

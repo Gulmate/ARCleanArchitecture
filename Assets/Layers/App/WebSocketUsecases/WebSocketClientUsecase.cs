@@ -43,7 +43,7 @@ public class WebSocketClientUsecase
 
     public void OnWebSocketStateChange(Action<WebSocketState> listener)
     {
-        _webSocketClientService.ConnectionStatusChanged += delegate (WebSocketState state)
+        _webSocketClientService.Instance.ConnectionStatusChanged += delegate (WebSocketState state)
         {
             listener(state);
         };

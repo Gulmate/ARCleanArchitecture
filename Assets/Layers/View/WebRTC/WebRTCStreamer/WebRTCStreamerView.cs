@@ -53,7 +53,7 @@ public class WebRTCStreamerView :MonoBehaviour
         _refreshButton.onClick.AddListener(Refresh);
         _callButton.onClick.AddListener(Call);
         _startStreamButton.onClick.AddListener(OnStartStream);
-        _webSocketStreamingClient.PaierUpDone += Connect;
+        _presenter.ConnectionStabilized += OnConnected;
     }
 
     private void OnStartStream()
@@ -91,8 +91,9 @@ public class WebRTCStreamerView :MonoBehaviour
         _presenter.Call(selectedViewerId);
     }
 
-    private void Connect()
+    private void OnConnected()
     {
-        _presenter.Connect();
+        _maintext.SetText("Connected to:" + _presenter.GetViewerId());
+        _startStreamButton.interactable = true;
     }
 }
