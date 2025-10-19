@@ -1,54 +1,104 @@
 using UnityEngine;
 using Mirror;
 using TMPro;
+using UnityEngine.SceneManagement;
 
-
-public class CustomNetworkManager : MonoBehaviour
+public class CustomNetworkManager : NetworkManager
 {
-    [SerializeField]
-    private NetworkManager manager;
-
     [SerializeField]
     private TMP_InputField addressInputField;
 
     [SerializeField]
     private TMP_InputField portInputField;
 
-    [SerializeField]
-    private TelepathyTransport transport;
-
-    public void StartServer()
+    public override void Awake()
     {
+        base.Awake();
+        autoCreatePlayer = false;
+    }
 
-        if (addressInputField != null && portInputField != null)
+    public void StartHostFromInput()
+    {
+        if (addressInputField == null || portInputField == null) return;
+
+        networkAddress = addressInputField.text;
+
+        if (ushort.TryParse(portInputField.text, out ushort port))
         {
-            manager.networkAddress = addressInputField.text;
-            transport.Port = ushort.Parse(portInputField.text);
+            if (transport is TelepathyTransport telepathy)
+                telepathy.port = port;
 
-
-            manager.StartHost();
+            StartHost();
         }
-        return;
+        else
+        {
+            Debug.LogError("Invalid port number");
+        }
     }
 
     public void Connect()
     {
-        if (addressInputField != null && portInputField != null)
+        if (addressInputField == null || portInputField == null) return;
+
+        networkAddress = addressInputField.text;
+
+        if (ushort.TryParse(portInputField.text, out ushort port))
         {
-            string address = addressInputField.text;
-            transport.Port = ushort.Parse(portInputField.text);
-            manager.StartClient();
+            if (transport is TelepathyTransport telepathy)
+                telepathy.port = port;
+
+            StartClient();
         }
-        return;
+        else
+        {
+            Debug.LogError("Invalid port number");
+        }
     }
 
     public void Disconnect()
     {
-        if (manager.isNetworkActive)
+        if (!isNetworkActive) return;
+
+        if (mode == NetworkManagerMode.Host)
+            StopHost();
+        else if (mode == NetworkManagerMode.ServerOnly)
+            StopServer();
+        else
+            StopClient();
+    }
+
+    // HOST starts with ARClient scene
+    public override void OnStartHost()
+    {
+        base.OnStartHost();
+
+        // only host switches to ARClient
+        SceneManager.LoadScene("ARClient");
+    }
+
+    // CLIENTS connect but stay in their own scene
+    public override void OnClientConnect()
+    {
+        base.OnClientConnect();
+
+        if (mode == NetworkManagerMode.ClientOnly)
         {
-            manager.StopClient();
+            // ensure they stay in Connection scene
+            SceneManager.LoadScene("Connection");
         }
     }
 
+    // Prevent Mirror’s automatic scene sync for clients
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+        if (mode == NetworkManagerMode.ClientOnly)
+        {
+            Debug.Log($"Client ignoring automatic scene change to {newSceneName}");
+            // we handle our own scene switching, so skip Mirror's logic
+            // (do not call base.OnClientChangeScene)
+            return;
+        }
 
+        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    }
 }
