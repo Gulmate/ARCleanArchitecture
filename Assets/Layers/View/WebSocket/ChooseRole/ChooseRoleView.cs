@@ -35,6 +35,16 @@ public class ChooseRoleView : MonoBehaviour
         }
         _joinAsStreamerButton.interactable = false;
         _joinAsViewerButton.interactable = false;
+        if(_presenter != null)
+        {
+            var connectionStatusAndType = _presenter.GetCurrentConnectionStatusAndType();
+            OnConnectionStatusChanged(connectionStatusAndType.Item1, connectionStatusAndType.Item2);
+            _presenter.ConnectionStatusChanged += OnConnectionStatusChanged;
+        }
+        else
+        {
+            Debug.LogError("ChooseRolePresenter is not injected properly.");
+        }
     }
 
     private void OnJoinAsViewerButtonClicked()

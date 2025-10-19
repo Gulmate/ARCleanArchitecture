@@ -38,6 +38,9 @@ public class ChooseRolePresenter : MonoBehaviour
     {
         // Notify subscribers about the connection status change
         ConnectionStatusChanged?.Invoke(status, _usecase.GetCurrentConnectionType());
-
+    }
+    public (WebSocketEnums.ConnectionStatus, WebSocketEnums.ConnectionType) GetCurrentConnectionStatusAndType()
+    {
+        return (_usecase.GetCurrentConnectionStatus(), _usecase.GetCurrentConnectionType());
     }
 }
