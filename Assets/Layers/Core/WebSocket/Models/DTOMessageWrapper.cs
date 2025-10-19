@@ -16,7 +16,7 @@ public class DTOMessageWrapper
         }
         if (dTOMessage.Payload != null)
         {
-            return "Type:{" + dTOMessage.Type + "}Message:{" + dTOMessage.Message + "}Payload:{" + ConvertToMessage(dTOMessage) + "}";
+            return "Type:{" + dTOMessage.Type + "}Message:{" + dTOMessage.Message + "}Payload:{" + ConvertToMessage(dTOMessage.Payload) + "}";
         }
         else
         {

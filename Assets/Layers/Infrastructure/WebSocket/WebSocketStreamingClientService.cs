@@ -22,6 +22,13 @@ public class WebSocketStreamingClientService
     public WebSocketEnums.ConnectionStatus Status => _instance._webSocketStreamingClient.ConnectionToStreamingStatus;
     public WebSocketEnums.ConnectionType Type => _instance._webSocketStreamingClient.ConnectionType;
     private static WebSocketStreamingClientService _instance;
+    public WebSocketStreamingClientService Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
 
     private WebSocketClientService _webSocketClientService;
     public void SetServices(WebSocketClientService webSocketClientService)
@@ -77,7 +84,7 @@ public class WebSocketStreamingClientService
                 Payload = null
             };
             _webSocketClientService.SendMessageToServer(dTOMessage);
-            _webSocketClientService.MessageReceived += OnMessageReceived;
+            _webSocketClientService.Instance.MessageReceived += OnMessageReceived;
         }
 
         else if ((_webSocketClientService.State != WebSocketState.Open))

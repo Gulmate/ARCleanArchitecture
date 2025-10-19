@@ -56,7 +56,7 @@ public class WebSocketConnectView : MonoBehaviour
     private void OnConnectButtonClicked()
     {
         _portInputField.text = _presenter.Connect(GetServerIp(), GetPort()).ToString();
-        //HidePanel();
+        HidePanel();
     }
     private void OnDestroy()
     {

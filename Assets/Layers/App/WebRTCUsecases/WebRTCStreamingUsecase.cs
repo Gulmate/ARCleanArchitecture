@@ -46,9 +46,9 @@ public class WebRTCStreamingUsecase
     {
         _webRTCService.SendAudioTrack(audioStreamTrack);
     }
-    public Task<List<uint>> GetPossibleViewersTask()
+    public async Task<List<uint>> GetPossibleViewersTask()
     {
-        return _webSocketStreamingClientService.GetPossibleViewersTask();
+        return await _webSocketStreamingClientService.GetPossibleViewersTask();
     }
     public RTCSignalingState GetSignalingState()
     {
