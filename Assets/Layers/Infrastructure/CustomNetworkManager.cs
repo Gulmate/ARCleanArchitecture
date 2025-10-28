@@ -5,24 +5,27 @@ using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
 {
-
     public override void Awake()
     {
+        TelepathyTransport telepathy = gameObject.AddComponent<TelepathyTransport>();
+        transport = telepathy;
+        Transport.active = telepathy;
+
         base.Awake();
+
         autoCreatePlayer = false;
     }
 
     public void StartHostFromInput(string ipInput, string portInput)
     {
         if (ipInput== null || portInput == null) return;
-
+        
         networkAddress = ipInput;
-
         if (ushort.TryParse(portInput, out ushort port))
         {
             if (transport is TelepathyTransport telepathy)
                 telepathy.port = port;
-
+            
             StartHost();
         }
         else
@@ -66,7 +69,6 @@ public class CustomNetworkManager : NetworkManager
     public override void OnStartHost()
     {
         base.OnStartHost();
-
         SceneManager.LoadScene("ARClient");
     }
     public override void OnClientConnect()

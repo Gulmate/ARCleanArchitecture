@@ -17,12 +17,12 @@ public class ConnectPresenter : MonoBehaviour
 
     public void Connect(string ip, string port)
     {
-       manager.Connect(ip, port);
+       _connectUseCase.Connect(ip, port);
     }
 
     public void StartHost(string ip, string port)
     {
-        manager.StartHostFromInput(ip, port);
+        _connectUseCase.StartHost(ip, port);
     }
 
 }
