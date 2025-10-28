@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VContainer;
 
 public class LoginPresenter : MonoBehaviour
 {
-    private ILoginUseCase _loginUseCase;
+    private LoginUseCase _loginUseCase;
 
     [Inject]
     private readonly IAutentication _autentication;
@@ -16,7 +17,9 @@ public class LoginPresenter : MonoBehaviour
 
     public void Login(string username, string password)
     {
-        _loginUseCase.Login(username, password);
+        if(_loginUseCase.Login(username, password))
+        { SceneManager.LoadScene("Mirror"); }
+        
     }
 
     public void Register(string username, string password)

@@ -1,12 +1,13 @@
+using UnityEngine.SceneManagement;
 using VContainer;
 
 public class AuthenticationService : IAutentication
 {
     [Inject]
     private readonly IFileHandlerService _logger;
-    public void Login(string username, string password)
+    public bool Login(string username, string password)
     {
-        DummyLoginCheck(username, password);
+        return DummyLoginCheck(username, password);
     }
 
     public void Register(string username, string password)
@@ -14,15 +15,17 @@ public class AuthenticationService : IAutentication
         DummyRegisterCheck(username, password);
     }
 
-    private void DummyLoginCheck(string username, string password)
+    private bool DummyLoginCheck(string username, string password)
     {
         if (username != "Admin" || password != "admin")
         {
             _logger.SaveLog("Login Attempt failed: Wrong username or password");
+            return false;
         }
         else
         {
-            _logger.SaveLog("Login Attempt failed: Error 500 Internal server error");
+            _logger.SaveLog("Successful login");
+            return true;
         }
     }
 

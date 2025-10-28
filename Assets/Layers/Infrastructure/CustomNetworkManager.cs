@@ -5,11 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
 {
-    [SerializeField]
-    private TMP_InputField addressInputField;
-
-    [SerializeField]
-    private TMP_InputField portInputField;
 
     public override void Awake()
     {
@@ -17,13 +12,13 @@ public class CustomNetworkManager : NetworkManager
         autoCreatePlayer = false;
     }
 
-    public void StartHostFromInput()
+    public void StartHostFromInput(string ipInput, string portInput)
     {
-        if (addressInputField == null || portInputField == null) return;
+        if (ipInput== null || portInput == null) return;
 
-        networkAddress = addressInputField.text;
+        networkAddress = ipInput;
 
-        if (ushort.TryParse(portInputField.text, out ushort port))
+        if (ushort.TryParse(portInput, out ushort port))
         {
             if (transport is TelepathyTransport telepathy)
                 telepathy.port = port;
@@ -36,13 +31,13 @@ public class CustomNetworkManager : NetworkManager
         }
     }
 
-    public void Connect()
+    public void Connect(string ipInput, string portInput)
     {
-        if (addressInputField == null || portInputField == null) return;
+        if (ipInput == null || portInput == null) return;
 
-        networkAddress = addressInputField.text;
+        networkAddress = ipInput;
 
-        if (ushort.TryParse(portInputField.text, out ushort port))
+        if (ushort.TryParse(portInput, out ushort port))
         {
             if (transport is TelepathyTransport telepathy)
                 telepathy.port = port;
@@ -67,35 +62,27 @@ public class CustomNetworkManager : NetworkManager
             StopClient();
     }
 
-    // HOST starts with ARClient scene
+
     public override void OnStartHost()
     {
         base.OnStartHost();
 
-        // only host switches to ARClient
         SceneManager.LoadScene("ARClient");
     }
-
-    // CLIENTS connect but stay in their own scene
     public override void OnClientConnect()
     {
         base.OnClientConnect();
 
         if (mode == NetworkManagerMode.ClientOnly)
         {
-            // ensure they stay in Connection scene
-            SceneManager.LoadScene("Connection");
+            SceneManager.LoadScene("Scenes/Connection");
         }
     }
 
-    // Prevent Mirror’s automatic scene sync for clients
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
         if (mode == NetworkManagerMode.ClientOnly)
         {
-            Debug.Log($"Client ignoring automatic scene change to {newSceneName}");
-            // we handle our own scene switching, so skip Mirror's logic
-            // (do not call base.OnClientChangeScene)
             return;
         }
 

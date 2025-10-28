@@ -1270,8 +1270,6 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  addressInputField: {fileID: 1887531292}
-  portInputField: {fileID: 93325235}
 --- !u!114 &806771213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1917,6 +1915,7 @@ GameObject:
   - component: {fileID: 1812631558}
   - component: {fileID: 1812631557}
   - component: {fileID: 1812631555}
+  - component: {fileID: 1812631559}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -2010,6 +2009,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812631553}
   m_CullTransparentMesh: 1
+--- !u!114 &1812631559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812631553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fbbc836ca8d3be408117929ff96d815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IPField: {fileID: 1887531292}
+  PortField: {fileID: 93325235}
+  connectButton: {fileID: 1999290961}
+  hostButton: {fileID: 506726802}
 --- !u!1 &1850613009
 GameObject:
   m_ObjectHideFlags: 0

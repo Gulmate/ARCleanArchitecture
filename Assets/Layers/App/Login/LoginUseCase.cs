@@ -1,5 +1,5 @@
 
-public class LoginUseCase: ILoginUseCase
+public class LoginUseCase
 {
     private readonly IAutentication _autentication;
 
@@ -8,9 +8,9 @@ public class LoginUseCase: ILoginUseCase
         _autentication = autentication;
     }
 
-    public void Login(string username, string password)
+    public bool Login(string username, string password)
     {
-        _autentication.Login(username, password);
+       return  _autentication.Login(username, password);
     }
 
 }

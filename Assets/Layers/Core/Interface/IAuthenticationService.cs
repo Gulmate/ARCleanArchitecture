@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface IAutentication
 {
-    public void Login(string username, string password);
+    public bool Login(string username, string password);
     public void Register(string username, string password);
 }
