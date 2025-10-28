@@ -23,7 +23,7 @@ public class WebSocketStreamingClientUsecase
     }
     public void OnConnectionStatusChanged(Action<WebSocketEnums.ConnectionStatus> listener)
     {
-        _service.ConnectionStatusChanged += delegate (WebSocketEnums.ConnectionStatus status)
+        _service.Instance.ConnectionStatusChanged += delegate (WebSocketEnums.ConnectionStatus status)
         {
             listener(status);
         };

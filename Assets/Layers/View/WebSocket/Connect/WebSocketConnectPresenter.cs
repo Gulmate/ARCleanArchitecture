@@ -1,10 +1,14 @@
 using WebSocketSharp;
 using UnityEngine;
 using VContainer;
+using System.Threading;
 
 public delegate void ConnectionStateChange(WebSocketState state);
 public class WebSocketConnectPresenter: MonoBehaviour
 {
+
+    private SynchronizationContext _mainThreadContext;
+
     public event ConnectionStateChange ConnectionStateChanged;
     private WebSocketClientUsecase _usecase;
 
@@ -21,6 +25,7 @@ public class WebSocketConnectPresenter: MonoBehaviour
 
     void Start()
     {
+        _mainThreadContext = SynchronizationContext.Current;
         _usecase.OnWebSocketStateChange(OnConnectionStateChanged);
     }
     public int Connect(string serverIP, string serverPort)
@@ -30,7 +35,18 @@ public class WebSocketConnectPresenter: MonoBehaviour
     private void OnConnectionStateChanged(WebSocketState state)
     {
         // Notify subscribers about the connection status change
-        ConnectionStateChanged?.Invoke(state);
+
+        if (SynchronizationContext.Current == _mainThreadContext)
+        {
+            ConnectionStateChanged?.Invoke(state);
+        }
+        else
+        {
+            _mainThreadContext.Post(_ =>
+            {
+                ConnectionStateChanged?.Invoke(state);
+            }, null);
+        }
     }
 
 }

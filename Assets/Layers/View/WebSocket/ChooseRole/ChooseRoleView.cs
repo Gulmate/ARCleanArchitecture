@@ -14,15 +14,12 @@ public class ChooseRoleView : MonoBehaviour
     private Button _joinAsStreamerButton;
     [SerializeField]
     private Button _joinAsViewerButton;
-    [SerializeField]
-    private Button _loadStreamerButton;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         if (_joinAsStreamerButton != null)
         {
             _joinAsStreamerButton.onClick.AddListener(OnJoinAsStreamerButtonClicked);
-            _loadStreamerButton.onClick.AddListener(()=> SceneManager.LoadScene("WebRTCStreamerScene"));
         }
         else
         {
