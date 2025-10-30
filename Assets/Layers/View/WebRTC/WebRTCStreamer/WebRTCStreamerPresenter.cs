@@ -4,16 +4,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 using Unity.WebRTC;
+using System.Threading;
 
 
 public delegate void JobDone();
 public class WebRTCStreamerPresenter : MonoBehaviour
 {
 
+    private SynchronizationContext _mainThreadContext;
+
     public event JobDone ConnectionStabilized;
+    public event JobDone ViewersIDsRecived;
 
     private WebRTCStreamingUsecase _usecase;
 
+    private List<uint> _viewerIDs;
 
     [Inject]
     private WebSocketStreamingClientService _webSocketStreamingClientService;
@@ -32,8 +37,10 @@ public class WebRTCStreamerPresenter : MonoBehaviour
 
     void Start()
     {
+        _mainThreadContext = SynchronizationContext.Current;
         _usecase.PairUpDone(Connect);
-        
+        _viewerIDs = new List<uint>();
+
     }
     void Update()
     {
@@ -55,28 +62,26 @@ public class WebRTCStreamerPresenter : MonoBehaviour
 
     private bool _ConnectionDone = false;
     private string _viewerId = "";
-    public List<string> Refresh()
+    public void Refresh()
     {
-        return GetViewers().Result; 
+        _usecase.GetPossibleViewersTask(OnViewerIDsRecived);
     }
-    private async Task<List<string>> GetViewers()
+    public List<uint> GetViewerIDs() =>_viewerIDs;
+    private void OnViewerIDsRecived(List<uint> viewerIDs)
     {
-        var answ = _usecase.GetPossibleViewersTask();
-        var result = await answ;
-        if (result != null)
+        if (SynchronizationContext.Current == _mainThreadContext)
         {
-            if (result.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                Debug.Log("Result first: " + result[0]);
-                var stringResult = result.ConvertAll(viewerId => viewerId.ToString());
-                return stringResult;
-            }
+            _viewerIDs = viewerIDs;
+            ViewersIDsRecived?.Invoke();
         }
-        return null;
+        else
+        {
+            _mainThreadContext.Post(_ =>
+            {
+                _viewerIDs = viewerIDs;
+                ViewersIDsRecived?.Invoke();
+            }, null);
+        }
     }
     public void Call(string viewerID)
     {

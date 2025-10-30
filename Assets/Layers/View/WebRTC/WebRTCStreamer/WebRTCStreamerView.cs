@@ -54,6 +54,7 @@ public class WebRTCStreamerView :MonoBehaviour
         _callButton.onClick.AddListener(Call);
         _startStreamButton.onClick.AddListener(OnStartStream);
         _presenter.ConnectionStabilized += OnConnected;
+        _presenter.ViewersIDsRecived += RefreshIDs;
     }
 
     private void OnStartStream()
@@ -66,11 +67,19 @@ public class WebRTCStreamerView :MonoBehaviour
     private void Refresh()
     {
         _viewerDropDown.ClearOptions();
-        var results = _presenter.Refresh();
-        if (results != null)
+        _viewerDropDown.AddOptions(new List<string> { "Refreshing..." });
+        _callButton.interactable = false;
+        _viewerDropDown.interactable = false;
+        _presenter.Refresh();
+    }
+    private void RefreshIDs()
+    {
+        _viewerDropDown.ClearOptions();
+        var viewerIDs = _presenter.GetViewerIDs();
+        if (viewerIDs != null && viewerIDs.Count > 0)
         {
-
-            _viewerDropDown.AddOptions(results);
+            var stringIDs = viewerIDs.ConvertAll(id => id.ToString());
+            _viewerDropDown.AddOptions(stringIDs);
             _callButton.interactable = true;
             _viewerDropDown.interactable = true;
         }

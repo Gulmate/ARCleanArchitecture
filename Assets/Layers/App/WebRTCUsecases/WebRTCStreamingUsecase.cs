@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.WebRTC;
@@ -46,9 +47,9 @@ public class WebRTCStreamingUsecase
     {
         _webRTCService.SendAudioTrack(audioStreamTrack);
     }
-    public async Task<List<uint>> GetPossibleViewersTask()
+    public void GetPossibleViewersTask(Action<List<uint>> listener)
     {
-        return await _webSocketStreamingClientService.GetPossibleViewersTask();
+        _webSocketStreamingClientService.GetPossibleViewersTask(listener);
     }
     public RTCSignalingState GetSignalingState()
     {

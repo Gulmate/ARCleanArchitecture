@@ -43,7 +43,7 @@ public class WebSocketStreamingClientService
     //_webSocketClientService.MessageReceived += OnWebSocketMessageRecived;
     public void ConnectToStreaming(WebSocketEnums.ConnectionType connectionType) => _instance.InstanceConnectToStreaming(connectionType);
     public void SendWebSocketMessageToPairClient(string message, int messageID) => _instance.InstanceSendWebSocketMessageToPairClient(message, messageID);
-    public async Task<List<uint>> GetPossibleViewersTask() => await _instance.InstanceGetPossibleViewersTask();
+    public void GetPossibleViewersTask(Action<List<uint>> listener) => _instance.InstanceGetPossibleViewersTask(listener);
     public void PairUp(uint viewerId) => _instance.InstancePairUp(viewerId);
     public void ListenToPairUpDone(System.Action listener)
     {
@@ -279,12 +279,12 @@ public class WebSocketStreamingClientService
 
         _webSocketClientService.SendMessageToClient(dTOMessage);
     }
-    private async Task<List<uint>> InstanceGetPossibleViewersTask()
+    private void InstanceGetPossibleViewersTask(Action<List<uint>> listener)
     {
         if (Type != WebSocketEnums.ConnectionType.Streamer)
         {
             DisplayDebugMessage?.Invoke($"Not a streamer. Cannot get viewers.");
-            return null;
+            return;
         }
 
         var tcs = new TaskCompletionSource<List<uint>>();
@@ -304,11 +304,13 @@ public class WebSocketStreamingClientService
                             .ToList();
                 viewers.Remove(0);
                 tcs.TrySetResult(viewers);
+                listener?.Invoke(viewers);
             }
             catch (Exception ex)
             {
                 DisplayDebugMessage?.Invoke($"Failed to parse viewers list: {ex.Message}");
                 tcs.TrySetException(ex);
+                listener?.Invoke(new List<uint>());
             }
             finally
             {
@@ -327,7 +329,6 @@ public class WebSocketStreamingClientService
 
         DisplayDebugMessage?.Invoke($"Requesting viewers for streamer with ID: {_webSocketStreamingClient.IDOnServer}");
 
-        return await tcs.Task;
     }
 
     private void InstancePairUp(uint viewerId)

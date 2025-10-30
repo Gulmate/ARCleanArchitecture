@@ -47,7 +47,7 @@ public class WebRTCService
         {
             _instance = new WebRTCService();
         }
-        if(_webRTCMessageHandler == null)
+        if(_instance._webRTCMessageHandler == null)
         {
             _instance._webRTCMessageHandler = webRTCMessageHandler;
             _instance.InstanceStartService();
@@ -56,6 +56,9 @@ public class WebRTCService
     public void SendVideoTrack(VideoStreamTrack videoStreamTrack) => _instance.InstanceSendVideoTrack(videoStreamTrack);
 
     public void SendAudioTrack(AudioStreamTrack audioStreamTrack) => _instance.InstanceSendAudioTrack(audioStreamTrack);
+    public void Negotiate() => _instance.InstanceNegotiate();
+    public void RTCSDpRecived(RTCSessionDescription sdp) => _instance.InstanceRTCSDpRecived(sdp);
+    public void IceCanditetRecived(RTCIceCandidate iceCandidate) => _instance.InstanceIceCanditetRecived(iceCandidate);
     public void ListenConnectionDone(System.Action listener)
     {
         _instance.Connected += delegate
@@ -67,7 +70,7 @@ public class WebRTCService
     {
         _coroutineRunner.StartCoroutine(WebRTC.Update());
         ConfigureRTC();
-        _coroutineRunner.StartCoroutine(LogStatsCoroutine());
+        //_coroutineRunner.StartCoroutine(LogStatsCoroutine());
     }
 
     private IEnumerator LogStatsCoroutine()
@@ -214,7 +217,7 @@ public class WebRTCService
         DisplayDebugMessage?.Invoke("Connection state changed: " + state);
     }
 
-    public void Negotiate()
+    private void InstanceNegotiate()
     {
         _coroutineRunner.StartCoroutine(OnNegotiationNeeded());
     }
@@ -274,7 +277,7 @@ public class WebRTCService
         _webRTCMessageHandler.SendICEMessage(candidate);
     }
 
-    public void IceCanditetRecived(RTCIceCandidate iceCandidate)
+    private void InstanceIceCanditetRecived(RTCIceCandidate iceCandidate)
     {
         if (iceCandidate == null)
         {
@@ -285,7 +288,7 @@ public class WebRTCService
         _peerConnection.AddIceCandidate(iceCandidate);
     }
 
-    public void RTCSDpRecived(RTCSessionDescription sdp)
+    private void InstanceRTCSDpRecived(RTCSessionDescription sdp)
     {
         switch (sdp.type)
         {

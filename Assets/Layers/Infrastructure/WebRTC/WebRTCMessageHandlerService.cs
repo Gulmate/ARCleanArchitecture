@@ -27,7 +27,7 @@ public class WebRTCMessageHandlerService
     public void SendICEMessage(RTCIceCandidate iceCandidate) => _instance.InstanceSendICEMessage(iceCandidate);
     private void SubscribeToWebScoketMessages()
     {
-        _webSocketClientService.MessageReceived += WebSocketMessageRecived;
+        _webSocketClientService.Instance.MessageReceived += WebSocketMessageRecived;
     }
     private void InstanceSendSDPMessage(RTCSessionDescription sdp)
     {
