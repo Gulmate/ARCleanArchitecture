@@ -1,30 +1,41 @@
+using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
 
 public class TutorialPresenter : MonoBehaviour
 {
-    //TODO: Here should be the load to t2D
     private TutorialUseCase tutorialUseCase = new TutorialUseCase();
 
     public Texture2D NextStep()
     {
-        return tutorialUseCase.NextStep();
+        Texture2D texture = new Texture2D(2, 2);
+        texture.LoadImage(tutorialUseCase.NextStep());
+        return texture;
+    }
+
+    public void Start()
+    {
+        tutorialUseCase.loggerSetup();
     }
 
     public Texture2D PrevStep()
     {
-        return tutorialUseCase.PrevStep();
+        Texture2D texture = new Texture2D(2, 2);
+        texture.LoadImage(tutorialUseCase.PrevStep());
+        return texture;
     }
 
     public Texture2D LoadTutorial(string zipPath)
     {
-        return tutorialUseCase.LoadTutorial(zipPath);
+        Texture2D texture = new Texture2D(2, 2);
+        texture.LoadImage(tutorialUseCase.LoadTutorial(zipPath));
+        return texture;
     }
 
     public void TakeScreenshot()
     {
-        string screenshotPath = Application.dataPath + "/screenshot_placeholder.png";
+        string screenshotPath = Application.persistentDataPath + "/screenshot_placeholder.png";
         ScreenCapture.CaptureScreenshot("Assets/screenshot_placeholder.png");
         StartCoroutine(SaveScreenshotWhenReady(screenshotPath));
     }

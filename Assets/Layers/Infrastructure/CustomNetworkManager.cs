@@ -69,7 +69,7 @@ public class CustomNetworkManager : NetworkManager
     public override void OnStartHost()
     {
         base.OnStartHost();
-        SceneManager.LoadScene("ARClient");
+        SceneManager.LoadScene("TutorialScene");
     }
     public override void OnClientConnect()
     {

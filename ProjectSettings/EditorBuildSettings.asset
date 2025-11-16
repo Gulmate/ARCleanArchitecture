@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mirror.unity
     guid: 4abb00fdfd9b7ef4ca33ebb609f723a7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ARClient.unity
     guid: 8095c3365a3cc214e90d4340cac1c62d
+  - enabled: 1
+    path: Assets/Scenes/TutorialScene.unity
+    guid: 5306a9e9850aa3d40bf983f75e025301
   - enabled: 1
     path: Assets/Scenes/Connection.unity
     guid: 470eab9c38250194d88529c2d9ee9a1f

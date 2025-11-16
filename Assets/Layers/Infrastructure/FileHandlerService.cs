@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FileHandlerService : IFileHandlerService
 {
-    private readonly string logPath = Application.dataPath + "/Logs/log";
+    private readonly string logPath = Application.persistentDataPath + "/log";
     DateTime localDate;
 
     public void SaveLog(string message)
@@ -24,9 +24,9 @@ public class FileHandlerService : IFileHandlerService
 
     public void LoadLogs()
     {
-        if (Directory.Exists(Application.dataPath + "/Logs"))
+        if (Directory.Exists(Application.persistentDataPath + "/Logs"))
         {
-            DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/Logs");
+            DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/Logs");
             FileInfo[] info = dir.GetFiles("*.txt");
             foreach (FileInfo f in info)
             {

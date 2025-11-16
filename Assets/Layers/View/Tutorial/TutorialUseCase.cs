@@ -1,23 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+
+public class PicData
+{
+    public byte[] data;
+}
 
 public class TutorialUseCase
 {
     private Ziphandler ziphandler = new Ziphandler();
-    //TODO: Change to not Unity type
-    private List<Texture2D> tutorialImages = new List<Texture2D>();
+    private List<PicData> tutorialImages = new List<PicData>();
     private MyLogger logger = new MyLogger();
+    private string sessionName;
 
     private int currentStep = 0;
 
-    public Texture2D NextStep()
+    public byte[] NextStep()
     {
         if (currentStep < tutorialImages.Count - 1)
         {
             currentStep++;
             logger.LogToJSON("Next button clicked successfully");
-            return tutorialImages[currentStep];
+            return tutorialImages[currentStep].data;
         }
         else
         {
@@ -26,13 +32,13 @@ public class TutorialUseCase
         }
     }
 
-    public Texture2D PrevStep()
+    public byte[] PrevStep()
     {
         if (currentStep > 0)
         {
             currentStep--;
             logger.LogToJSON("Previous button clicked successfully");
-            return tutorialImages[currentStep];
+            return tutorialImages[currentStep].data;
         }
         else
         {
@@ -41,23 +47,39 @@ public class TutorialUseCase
         }
     }
 
-    public Texture2D LoadTutorial(string zipPath)
+    public void loggerSetup()
     {
-        logger.setZipPath(zipPath);
+        sessionName = $"session{DateTime.Now.ToString().Replace(" ","").Replace(":","-")}";
+        logger.setZipPath(Path.Combine(Application.persistentDataPath, $"Logs/{sessionName}.zip"));
+    }
+
+    public byte[] LoadTutorial(string zipPath)
+    {
         tutorialImages = ziphandler.loadZipPics(zipPath);
         currentStep = 0;
-        logger.LogToJSON("Tutorial images loaded from zip", zipPath);
-        return tutorialImages.Count > 0 ? tutorialImages[0] : null;
+        Dictionary<string, string> logData = new Dictionary<string, string>
+        {
+            { "zipPath", zipPath }
+        };
+        logger.LogToJSON("Tutorial images loaded from zip", logData);
+        return tutorialImages.Count > 0 ? tutorialImages[0].data : null;
     }
 
     public void TakeScreenshot(string screenshotPath)
     {
+        DateTime now = DateTime.Now;
+        string newScreenshotPath = Path.Combine(Application.persistentDataPath,$"/Logs/{sessionName}.zip/Logs/screenshot_{now.ToString().Replace(" ", "").Replace(":", "-")}.png");
+        Debug.Log(newScreenshotPath);
         ziphandler.saveScreenshotToZip(
-            Path.Combine(Application.dataPath, "Saves/kavefozo.zip"),
+            Path.Combine(Application.persistentDataPath, $"Logs/{sessionName}.zip"),
             File.ReadAllBytes(screenshotPath),
-            "Logs/screenshot_placeholder.png"
+            $"Logs/screenshot_{now.ToString().Replace(" ", "").Replace(":", "-")}.png"
         );
+        Dictionary<string, string> logData = new Dictionary<string, string>
+        {
+            { "screenshotPath", newScreenshotPath }
+        };
 
-        logger.LogToJSON("Screenshot taken", Application.dataPath +"/Saves/kavefozo.zip"+ "/Logs/screenshot_placeholder.png");
+        logger.LogToJSON("Screenshot taken.",logData);
     }
 }

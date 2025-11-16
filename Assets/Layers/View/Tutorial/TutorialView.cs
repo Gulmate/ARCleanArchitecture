@@ -39,7 +39,7 @@ public class TutorialView : MonoBehaviour
         });
         loadButton.onClick.AddListener(() =>
         {
-            tutorialImage.texture= presenter.LoadTutorial(Application.dataPath + "/Saves/kavefozo.zip");
+            tutorialImage.texture= presenter.LoadTutorial(Application.persistentDataPath + "/Saves/kavefozo.zip");
         });
 
         screenShotButton.onClick.AddListener(() =>

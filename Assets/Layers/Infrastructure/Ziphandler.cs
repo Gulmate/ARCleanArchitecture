@@ -6,8 +6,9 @@ using UnityEngine;
 public class Ziphandler
 {
 
-    public List<Texture2D> loadZipPics(string zipPath)
+    public List<PicData> loadZipPics(string zipPath)
     {
+        List<PicData> picDatas = new List<PicData>();
         using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Open))
         {
             using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
@@ -15,10 +16,6 @@ public class Ziphandler
                 List<Texture2D> textures = new List<Texture2D>();
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    if(entry.FullName.Contains("Logs/"))
-                    {
-                        continue;
-                    }
                     if (entry.FullName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
                         entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                     {
@@ -30,19 +27,21 @@ public class Ziphandler
                                 stream.CopyTo(memoryStream);
                                 imageData = memoryStream.ToArray();
                             }
-                            Texture2D texture = new Texture2D(2, 2);
+                            picDatas.Add(new PicData { data = imageData });
+                            /*Texture2D texture = new Texture2D(2, 2);
                             texture.LoadImage(imageData);
-                            textures.Add(texture);
+                            textures.Add(texture);*/
                         }
                     }
                 }
-                return textures;
+                return picDatas;
             }
         }
     }
 
     public void saveScreenshotToZip(string zipPath, byte[] imageBytes, string fileName)
     {
+        
         using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Open))
         {
             using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
