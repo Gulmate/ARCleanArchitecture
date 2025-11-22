@@ -1,6 +1,5 @@
 using UnityEngine;
 using Mirror;
-using TMPro;
 using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
@@ -14,19 +13,23 @@ public class CustomNetworkManager : NetworkManager
         base.Awake();
 
         autoCreatePlayer = false;
+        offlineScene = "Mirror";
     }
 
-    public void StartHostFromInput(string ipInput, string portInput)
+    public void StartServerFromInput(string ipInput, string portInput)
     {
         if (ipInput== null || portInput == null) return;
         
         networkAddress = ipInput;
+
+        
+
         if (ushort.TryParse(portInput, out ushort port))
         {
             if (transport is TelepathyTransport telepathy)
                 telepathy.port = port;
             
-            StartHost();
+            StartServer();
         }
         else
         {
@@ -65,12 +68,17 @@ public class CustomNetworkManager : NetworkManager
             StopClient();
     }
 
-
-    public override void OnStartHost()
+    public override void OnStartServer()
     {
-        base.OnStartHost();
-        SceneManager.LoadScene("ARClient");
+        base.OnStartServer();
+        
+        if (mode == NetworkManagerMode.ServerOnly)
+        {
+            Debug.Log("Dedicated server started — loading ServerScene");
+            SceneManager.LoadScene("ServerScene");
+        }
     }
+
     public override void OnClientConnect()
     {
         base.OnClientConnect();
@@ -79,6 +87,16 @@ public class CustomNetworkManager : NetworkManager
         {
             SceneManager.LoadScene("Scenes/Connection");
         }
+    }
+
+    public void ChangeSceneToStream()
+    {
+        SceneManager.LoadScene("Scenes/ARClient");
+    }
+
+    public void ChangeSceneToView()
+    {
+        SceneManager.LoadScene("Scenes/ViewerClient");
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)

@@ -11,6 +11,6 @@
     }
     public void StartHost(string ip, string port)
     {
-        _networkManager.StartHostFromInput(ip, port);
+        _networkManager.StartServerFromInput(ip, port);
     }
 }

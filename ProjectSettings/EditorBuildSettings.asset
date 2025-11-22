@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mirror.unity
     guid: 4abb00fdfd9b7ef4ca33ebb609f723a7
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/ARClient.unity
     guid: 8095c3365a3cc214e90d4340cac1c62d
   - enabled: 1
@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Connection.unity
     guid: 470eab9c38250194d88529c2d9ee9a1f
+  - enabled: 1
+    path: Assets/Scenes/ServerScene.unity
+    guid: 11d2a5db86118c74c8f2aa5c381ac7e0
+  - enabled: 1
+    path: Assets/Scenes/ViewerClient.unity
+    guid: 050e8669571bd164e85ba42df35f911b
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: d9ab9eabcd986a04090163e90598c5da, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 23b705b049d699c40b640f23a51908bc, type: 2}
