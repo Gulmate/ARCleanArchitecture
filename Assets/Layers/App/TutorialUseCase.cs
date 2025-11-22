@@ -3,47 +3,37 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class PicData
-{
-    public byte[] data;
-}
-
 public class TutorialUseCase
 {
     private Ziphandler ziphandler = new Ziphandler();
-    private List<PicData> tutorialImages = new List<PicData>();
     private MyLogger logger = new MyLogger();
     private string sessionName;
 
-    private int currentStep = 0;
+    private StepHandler stepHandler = new StepHandler();
 
-    public byte[] NextStep()
+    
+
+    public void NextStep()
     {
-        if (currentStep < tutorialImages.Count - 1)
+        if (stepHandler.HasNextStep())
         {
-            currentStep++;
             logger.LogToJSON("Next button clicked successfully");
-            return tutorialImages[currentStep].data;
         }
         else
         {
             logger.LogToJSON("Next button clicked failed - no more steps");
-            return null;
         }
     }
 
-    public byte[] PrevStep()
+    public void PrevStep()
     {
-        if (currentStep > 0)
+        if (stepHandler.HasPrevStep())
         {
-            currentStep--;
             logger.LogToJSON("Previous button clicked successfully");
-            return tutorialImages[currentStep].data;
         }
         else
         {
             logger.LogToJSON("Previous button clicked failed - no previous steps");
-            return null;
         }
     }
 
@@ -53,16 +43,20 @@ public class TutorialUseCase
         logger.setZipPath(Path.Combine(Application.persistentDataPath, $"Logs/{sessionName}.zip"));
     }
 
-    public byte[] LoadTutorial(string zipPath)
+    public void LoadTutorial(string zipPath)
     {
-        tutorialImages = ziphandler.loadZipPics(zipPath);
-        currentStep = 0;
+        stepHandler.loadSteps(ziphandler.LoadStepsFromZip(zipPath));
         Dictionary<string, string> logData = new Dictionary<string, string>
         {
             { "zipPath", zipPath }
         };
-        logger.LogToJSON("Tutorial images loaded from zip", logData);
-        return tutorialImages.Count > 0 ? tutorialImages[0].data : null;
+        logger.LogToJSON("Tutorial loaded from zip", logData);
+        
+    }
+
+    public Step GetCurrentStep()
+    {
+        return stepHandler.getCurrentStep();
     }
 
     public void TakeScreenshot(string screenshotPath)

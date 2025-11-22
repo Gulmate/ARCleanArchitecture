@@ -5,15 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using UnityEngine;
 
-internal class LogEntry
-{
-    public string timestamp;
-    public string message;
-
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public Dictionary<string, string> attachments;
-}
-
 public class MyLogger
 {
     private string zipPath = null;
