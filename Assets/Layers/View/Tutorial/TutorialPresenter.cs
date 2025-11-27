@@ -1,13 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
 public class TutorialPresenter : MonoBehaviour
 {
     private TutorialUseCase tutorialUseCase = new TutorialUseCase();
+    private DetectUseCase detectUseCase;
 
     private List<Texture2D> images = new List<Texture2D>();
     private int currentImageIndex = 0;
@@ -67,8 +71,8 @@ public class TutorialPresenter : MonoBehaviour
     }
 
     public string GetVideo()
-    { 
-        return videoPath; 
+    {
+        return videoPath;
     }
 
     //TODO le vinni infrastrukturaba
@@ -95,6 +99,31 @@ public class TutorialPresenter : MonoBehaviour
         }
     }
 
+    public void AddImageToDetect()
+    {
+        Texture2D imageToAdd = new Texture2D(2, 2);
+
+        /*using (var stream = File.Open(Path.Combine(Application.streamingAssetsPath, "qrtest.png"), FileMode.Open))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                imageToAdd.LoadImage(memoryStream.ToArray());
+            }
+        }*/
+        using (var stream = File.Open(Path.Combine(Application.persistentDataPath, "qrtest.png"), FileMode.Open))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                imageToAdd.LoadImage(memoryStream.ToArray());
+            }
+        }
+
+        detectUseCase.AddImage(imageToAdd);
+    }
+
+
     public string GetText()
     {
         return text;
@@ -116,5 +145,10 @@ public class TutorialPresenter : MonoBehaviour
 
         tutorialUseCase.TakeScreenshot(screenshotPath);
         File.Delete(screenshotPath);
+    }
+
+    public void InitUseCase(ARTrackedImageManager imageTrackingManager, XRReferenceImageLibrary serializedLibrary)
+    {
+        detectUseCase = new DetectUseCase(new TargetImageHandler(imageTrackingManager, serializedLibrary));
     }
 }

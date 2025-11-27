@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using UnityEngine;
 
-public class MyLogger
+public class DocumentationLogger
 {
     private string zipPath = null;
     DateTime localDate;

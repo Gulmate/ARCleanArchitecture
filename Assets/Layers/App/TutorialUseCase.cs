@@ -6,7 +6,7 @@ using UnityEngine;
 public class TutorialUseCase
 {
     private Ziphandler ziphandler = new Ziphandler();
-    private MyLogger logger = new MyLogger();
+    private DocumentationLogger logger = new DocumentationLogger();
     private string sessionName;
 
     private StepHandler stepHandler = new StepHandler();

@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 using VContainer;
 
 public class TutorialView : MonoBehaviour
@@ -31,6 +33,9 @@ public class TutorialView : MonoBehaviour
     [SerializeField] private Button pauseAudioButton;
     [SerializeField] private Button restartAudioButton;
     [SerializeField] private AudioSource audioSource;
+
+    [SerializeField] private XRReferenceImageLibrary serializedLibrary;
+    [SerializeField] private ARTrackedImageManager imageTrackingManager;
 
     [Inject]
     private TutorialPresenter presenter;
@@ -104,7 +109,7 @@ public class TutorialView : MonoBehaviour
         pauseAudioButton.onClick.AddListener(() => { audioSource.Pause(); });
         restartAudioButton.onClick.AddListener(() => { audioSource.time = 0; });
 
-
+        presenter.InitUseCase(imageTrackingManager,serializedLibrary);
     }
 
 
