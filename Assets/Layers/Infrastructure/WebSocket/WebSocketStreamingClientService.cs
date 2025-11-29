@@ -10,6 +10,11 @@ public delegate void DoneEventHandler();
 public delegate void WebSocketStreamingStatusHandler(WebSocketEnums.ConnectionStatus connectionStatus);
 public class WebSocketStreamingClientService
 {
+    private bool newVersion = false;
+    public void SetNewVersion(bool isNewVersion)
+    {
+        Instance.newVersion = isNewVersion;
+    }
     public event DisplayMessageHandler DisplayDebugMessage;
 
     public event DTOMessageHandler StreamingMessageReceived;
@@ -51,6 +56,18 @@ public class WebSocketStreamingClientService
         {
             listener();
         };
+    }
+    public void SendWebSocketMessageToPairClientWithID(string message, int messageID, uint pairID)
+    {
+        if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Viewer
+            &&_webSocketStreamingClient.PairID==pairID)
+        {
+            _instance.InstanceSendWebSocketMessageToPairClient(message, messageID);
+        }
+        else if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Streamer)
+        {
+            _instance.InstanceSendWebSocketMessageToPairClientWithID(message, messageID, pairID);
+        }
     }
     private void InstanceConnectToStreaming(WebSocketEnums.ConnectionType connectionType)
     {
@@ -166,7 +183,10 @@ public class WebSocketStreamingClientService
                 HandleRelayedMessage(dTOMessage.Payload);
                 break;
             case WebSocketEnums.AnswerType.Paired:
-                HandlePairMessage(dTOMessage.Message);
+                if (newVersion)
+                    HandlePairMessageNew(dTOMessage.Message);
+                else
+                    HandlePairMessage(dTOMessage.Message);
                 break;
             case WebSocketEnums.AnswerType.Logged:
                 DisplayDebugMessage?.Invoke($"Message logged on Server.");
@@ -198,6 +218,32 @@ public class WebSocketStreamingClientService
         {
             _webSocketStreamingClient.PairID = parsedId;
             PaierUpDone?.Invoke();
+        }
+        else
+        {
+            DisplayDebugMessage?.Invoke($"Failed to parse pair ID from payload: {message}");
+        }
+    }
+
+    private void HandlePairMessageNew(string message)
+    {
+
+        if (uint.TryParse(message, out uint parsedId))
+        {
+            if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Viewer)
+            {
+                _webSocketStreamingClient.PairID = parsedId;
+                PaierUpDone?.Invoke();
+            }
+            else if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Streamer)
+            {
+                _webSocketStreamingClient.Pairs.Add(parsedId);
+                PaierUpDone?.Invoke(); ;
+            }
+            else
+            {
+                DisplayDebugMessage?.Invoke($"Failed to pair Not viewer not streamer ID: {parsedId}");
+            }
         }
         else
         {
@@ -361,4 +407,84 @@ public class WebSocketStreamingClientService
         };
         _webSocketClientService.SendMessageToClient(dTOMessage);
     }
+
+
+    private void InstanceSendWebSocketMessageToPairClientWithID(string message, int messageID, uint pairID)
+    {
+        if (_webSocketClientService.State != WebSocketState.Open)
+        {
+            DisplayDebugMessage?.Invoke($"WebSocket is not open. Current state: {_webSocketClientService.State}");
+            return;
+        }
+        if (Status != WebSocketEnums.ConnectionStatus.Connected)
+        {
+            DisplayDebugMessage?.Invoke($"Not connected to WebSocketServer. Current status: {Status}");
+            return;
+        }
+        if (!_webSocketStreamingClient.Pairs.Contains(pairID))
+        {
+            DisplayDebugMessage?.Invoke($"Pair ID:{pairID} is not set. Cannot send message to pair client.");
+            return;
+        }
+        DTOMessageWrapper dTOMessage;
+        switch (Type)
+        {
+            case WebSocketEnums.ConnectionType.Streamer:
+                var wrapper = new DTOMessageWrapper
+                {
+                    Type = messageID,
+                    Message = message,
+                    Payload = null
+                };
+                var wrapper1 = new DTOMessageWrapper
+                {
+                    Type = (int)pairID,
+                    Message = "Relayed message",
+                    Payload = wrapper
+                };
+                var wrapper2 = new DTOMessageWrapper
+                {
+                    Type = (int)WebSocketEnums.ToViewrMessageType.ToTraget,
+                    Payload = wrapper1,
+                    Message = "Message to pair client"
+                };
+                dTOMessage = new DTOMessageWrapper
+                {
+                    Type = (int)WebSocketEnums.ToOtherClientMessageType.ToViewer,
+                    Payload = wrapper2,
+                    Message = "Message to viewer"
+                };
+                break;
+            case WebSocketEnums.ConnectionType.Viewer:
+                var wrapper3 = new DTOMessageWrapper
+                {
+                    Type = messageID,
+                    Message = message,
+                    Payload = null
+                };
+                var wrapper4 = new DTOMessageWrapper
+                {
+                    Type = (int)_webSocketStreamingClient.PairID,
+                    Payload = wrapper3,
+                    Message = "Relayed message"
+                };
+                dTOMessage = new DTOMessageWrapper
+                {
+                    Type = (int)WebSocketEnums.ToOtherClientMessageType.ToStreamer,
+                    Payload = wrapper4,
+                    Message = "Message to streamer"
+                };
+                break;
+            default:
+                DisplayDebugMessage?.Invoke($"Unknown connection type: {Type}");
+                return;
+        }
+
+        _webSocketClientService.SendMessageToClient(dTOMessage);
+    }
+    public int GetIDOnServer()
+    {
+        return _webSocketStreamingClient.IDOnServer;
+    }
+
 }
