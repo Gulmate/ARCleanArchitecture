@@ -79,5 +79,9 @@ public class WebRTCMultiClientStreamingUsecase
         {
             callback(message);
         };
+        WebRTCStreamerMessageHandlerService.Instance.DisplayDebugMessage += delegate (string message)
+        {
+            callback(message);
+        };
     }
 }

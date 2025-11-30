@@ -17,12 +17,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WebRTCTest/WebSocketConnectScene.unity
     guid: bc58aca4274a22542b6dccfff4a9a214
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/WebRTCTest/WebRTCStreamerScene.unity
     guid: 9778c28cbd4b20a4e904b4d8b0eed7b4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/WebRTCTest/WebRTCViewerScene.unity
     guid: def649a07c54eef4d93627c1eba3a086
+  - enabled: 1
+    path: Assets/Scenes/WebRTCTest/WebRTCMultiClientStreamerScene.unity
+    guid: 04ab4f3338d3e8e4d941f859adb75e60
+  - enabled: 1
+    path: Assets/Scenes/WebRTCTest/WebRTCMultiClientViewerScene.unity
+    guid: 2a764a3e6e063ae46a71b9c9b3da5984
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: d9ab9eabcd986a04090163e90598c5da, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 23b705b049d699c40b640f23a51908bc, type: 2}

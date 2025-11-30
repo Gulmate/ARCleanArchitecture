@@ -42,6 +42,10 @@ public class WebRTCMultiClientViewingUsecase
         {
             callback(message);
         };
+        WebRTCViewerMessageHandlerService.Instance.DisplayDebugMessage += delegate (string message)
+        {
+            callback(message);
+        };
     }
     public void StopConnection()
     {

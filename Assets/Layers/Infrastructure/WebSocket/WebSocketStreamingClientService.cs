@@ -67,8 +67,12 @@ public class WebSocketStreamingClientService
     }
     public void SendWebSocketMessageToPairClientWithID(string message, int messageID, uint pairID)
     {
+        _instance.InstanceSendWebSocketMessageToPairClientWithIDOrWithoutID(message, messageID, pairID);
+    }
+    private void InstanceSendWebSocketMessageToPairClientWithIDOrWithoutID(string message, int messageID, uint pairID)
+    {
         if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Viewer
-            &&_webSocketStreamingClient.PairID==pairID)
+            && _webSocketStreamingClient.PairID == pairID)
         {
             _instance.InstanceSendWebSocketMessageToPairClient(message, messageID);
         }
@@ -494,7 +498,7 @@ public class WebSocketStreamingClientService
     }
     public int GetIDOnServer()
     {
-        return _webSocketStreamingClient.IDOnServer;
+        return _instance._webSocketStreamingClient.IDOnServer;
     }
 
 }

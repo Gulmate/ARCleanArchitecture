@@ -76,13 +76,15 @@ public class ChooseRoleView : MonoBehaviour
                 {
                     //Redirect to streamer screen
                     Debug.Log("Redirecting to streamer screen");
-                    SceneManager.LoadScene("WebRTCStreamerScene");
+                    //SceneManager.LoadScene("WebRTCStreamerScene");
+                    SceneManager.LoadScene("WebRTCMultiClientStreamerScene");
                 }
                 else if(connectionType == WebSocketEnums.ConnectionType.Viewer)
                 {
                     //Redirect to viewer screen
                     Debug.Log("Redirecting to viewer screen");
-                    SceneManager.LoadScene("WebRTCViewerScene");
+                    //SceneManager.LoadScene("WebRTCViewerScene");
+                    SceneManager.LoadScene("WebRTCMultiClientViewerScene");
                 }
                 break;
             case WebSocketEnums.ConnectionStatus.ConnectionFailed:

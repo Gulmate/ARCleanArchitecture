@@ -12,6 +12,7 @@ public class WebRTCViewerMessageHandlerService
     private static int iceType = 210;
 
     private static WebRTCViewerMessageHandlerService _instance;
+    public static WebRTCViewerMessageHandlerService Instance { get { return _instance; } }
     public void SetServices(WebSocketClientService webSocketClientService, WebSocketStreamingClientService webSocketStreamingClientService)
     {
         if (_instance == null)
@@ -26,10 +27,12 @@ public class WebRTCViewerMessageHandlerService
 
     private void SubscribeToWebScoketMessages()
     {
+        DisplayDebugMessage?.Invoke("Subscribing to WebSocket messages in WebRTCViewerMessageHandlerService");
         _webSocketClientService.Instance.MessageReceived += WebSocketMessageRecived;
     }
     private void SubscribeToWebRTCViewerMessages()
     {
+        DisplayDebugMessage?.Invoke("Subscribing to WebRTCViewer messages in WebRTCViewerMessageHandlerService");
         WebRTCViewerService.Instance.OnLocalIceCandidate += (iceCandidate) =>
         {
             SendICEMessage(iceCandidate);
@@ -42,13 +45,16 @@ public class WebRTCViewerMessageHandlerService
 
     private void SendSDPMessage(RTCSessionDescription offer)
     {
+        DisplayDebugMessage?.Invoke("Sending SDP message to paired client");
         var message = JsonUtility.ToJson(offer);
         var type = _webSocketStreamingClientService.GetIDOnServer() * 1000 + sdpType;
+        DisplayDebugMessage?.Invoke("SDP Message Type: " + type);
         _webSocketStreamingClientService.SendWebSocketMessageToPairClient(message, type);
     }
 
     private void SendICEMessage(RTCIceCandidate iceCandidate)
     {
+        DisplayDebugMessage?.Invoke("Sending ICE message to paired client");
         RTCIceCandidateInit rTCIceCandidateInit = new RTCIceCandidateInit
         {
             candidate = iceCandidate.Candidate,
@@ -57,6 +63,7 @@ public class WebRTCViewerMessageHandlerService
         };
         var message = JsonUtility.ToJson(rTCIceCandidateInit);
         var type = _webSocketStreamingClientService.GetIDOnServer() * 1000 + iceType;
+        DisplayDebugMessage?.Invoke("ICE Message Type: " + type);
         _webSocketStreamingClientService.SendWebSocketMessageToPairClient(message, type);
     }
 
@@ -75,10 +82,12 @@ public class WebRTCViewerMessageHandlerService
             switch (relayedMessage.Type)
             {
                 case var type when type == sdpType:
+                    DisplayDebugMessage?.Invoke("Received SDP message from paired client");
                     var sdp = JsonUtility.FromJson<RTCSessionDescription>(relayedMessage.Message);
                     WebRTCViewerService.Instance.ReceiveOffer(sdp);
                     break;
                 case var type when type == iceType:
+                    DisplayDebugMessage?.Invoke("Received ICE message from paired client");
                     var iceCandidateInit = JsonUtility.FromJson<RTCIceCandidateInit>(relayedMessage.Message);
                     RTCIceCandidate iceCandidate = new RTCIceCandidate(iceCandidateInit);
                     WebRTCViewerService.Instance.AddRemoteIceCandidate(iceCandidate);
