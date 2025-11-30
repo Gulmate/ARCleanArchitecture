@@ -63,7 +63,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     }
 
     //private bool _ConnectionDone = false;
-    private List<string> _viewerId = new List<string>();
+    private List<string> _connectedViewerIds = new List<string>();
     public void Refresh()
     {
         _usecase.GetPossibleViewersTask(OnViewerIDsRecived);
@@ -74,6 +74,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
         if (SynchronizationContext.Current == _mainThreadContext)
         {
             _viewerIDs = viewerIDs;
+            _viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
             ViewersIDsRecived?.Invoke();
         }
         else
@@ -81,6 +82,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
             _mainThreadContext.Post(_ =>
             {
                 _viewerIDs = viewerIDs;
+                _viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
                 ViewersIDsRecived?.Invoke();
             }, null);
         }
@@ -92,7 +94,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
         if (uint.TryParse(viewerID, out uint viewerIdInt))
         {
             _usecase.PairUp(viewerIdInt);
-            _viewerId.Add(viewerID);
+            //_connectedViewerIds.Add(viewerID);
         }
         else
         {
@@ -109,7 +111,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     }
     public List<string> GetViewersId()
     {
-        return _viewerId;
+        return _connectedViewerIds;
     }
     private void Log(string message)
     {
@@ -119,14 +121,14 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     {
         if (SynchronizationContext.Current == _mainThreadContext)
         {
-            _viewerId.Add(viewerID);
+            _connectedViewerIds.Add(viewerID);
             OnViewerConnected?.Invoke(viewerID);
         }
         else
         {
             _mainThreadContext.Post(_ =>
             {
-                _viewerId.Add(viewerID);
+                _connectedViewerIds.Add(viewerID);
                 OnViewerConnected?.Invoke(viewerID);
             }, null);
         }

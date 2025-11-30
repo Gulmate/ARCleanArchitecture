@@ -75,6 +75,7 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
             _callButton.interactable = false;
             _viewerDropDown.interactable = false;
         }
+        _refreshButton.interactable = true;
     }
     private void Call()
     {
