@@ -12,7 +12,7 @@ public class WebRTCViewerMessageHandlerService
     private static int iceType = 210;
 
     private static WebRTCViewerMessageHandlerService _instance;
-    public void SetServices(WebSocketClientService webSocketClientService, WebSocketStreamingClientService webSocketStreamingClientService, WebRTCStreamerService webRTCStreamerService)
+    public void SetServices(WebSocketClientService webSocketClientService, WebSocketStreamingClientService webSocketStreamingClientService)
     {
         if (_instance == null)
         {

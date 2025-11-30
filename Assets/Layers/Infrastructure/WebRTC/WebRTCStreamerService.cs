@@ -108,6 +108,7 @@ public class WebRTCStreamerService
         OnDebugMessage?.Invoke($"Applying answer for viewer {viewerId}");
         var pc = _viewers[viewerId];
         _coroutineRunner.StartCoroutine(ApplyAnswer(pc, answer));
+        OnViewerConnected?.Invoke(viewerId);
     }
     private IEnumerator CreateOfferForViewer(string viewerId, RTCPeerConnection pc)
     {
@@ -126,7 +127,6 @@ public class WebRTCStreamerService
 
         OnDebugMessage?.Invoke($"Offer created and set for viewer {viewerId}");
         OnOfferCreated?.Invoke(viewerId, desc);
-        OnViewerConnected?.Invoke(viewerId);
     }
 
 

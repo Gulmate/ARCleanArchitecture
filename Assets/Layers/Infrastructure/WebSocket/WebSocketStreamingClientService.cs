@@ -22,6 +22,7 @@ public class WebSocketStreamingClientService
     public event DoneEventHandler PaierUpDone;
     public event WebSocketStreamingStatusHandler ConnectionStatusChanged;
 
+    public event Action<string> PaierUpDoneWithID;
 
     private readonly WebSocketStreamingClient _webSocketStreamingClient = new WebSocketStreamingClient();
     public WebSocketEnums.ConnectionStatus Status => _instance._webSocketStreamingClient.ConnectionToStreamingStatus;
@@ -55,6 +56,13 @@ public class WebSocketStreamingClientService
         _instance.PaierUpDone += delegate
         {
             listener();
+        };
+    }
+    public void ListenToPairUpDoneWithID(System.Action<string> listener)
+    {
+        _instance.PaierUpDoneWithID += delegate (string id)
+        {
+            listener(id);
         };
     }
     public void SendWebSocketMessageToPairClientWithID(string message, int messageID, uint pairID)
@@ -234,11 +242,13 @@ public class WebSocketStreamingClientService
             {
                 _webSocketStreamingClient.PairID = parsedId;
                 PaierUpDone?.Invoke();
+                PaierUpDoneWithID?.Invoke(parsedId.ToString());
             }
             else if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Streamer)
             {
                 _webSocketStreamingClient.Pairs.Add(parsedId);
-                PaierUpDone?.Invoke(); ;
+                PaierUpDone?.Invoke();
+                PaierUpDoneWithID?.Invoke(parsedId.ToString());
             }
             else
             {

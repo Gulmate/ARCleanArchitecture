@@ -1,0 +1,139 @@
+using System.Collections.Generic;
+using System.Threading;
+using System;
+using Unity.VisualScripting;
+using Unity.WebRTC;
+using UnityEngine;
+using VContainer;
+
+public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
+{
+
+    private SynchronizationContext _mainThreadContext;
+
+    //public event JobDone ConnectionStabilized;
+    public event JobDone ViewersIDsRecived;
+    public event Action<string> OnViewerConnected;
+
+    private WebRTCMultiClientStreamingUsecase _usecase;
+
+    private List<uint> _viewerIDs;
+
+    [Inject]
+    private WebSocketStreamingClientService _webSocketStreamingClientService;
+    [Inject]
+    private WebSocketClientService _webSocketClientService;
+    [Inject]
+    private WebRTCStreamerMessageHandlerService _webRTCStreamerMessageHandlerService;
+
+    [Inject]
+    void Awake()
+    {
+        _usecase = new WebRTCMultiClientStreamingUsecase(_webSocketClientService, _webSocketStreamingClientService, _webRTCStreamerMessageHandlerService);
+    }
+    //VIEW:  set video source, List viewer IDs, select one to call instant call, 
+    void Start()
+    {
+        _mainThreadContext = SynchronizationContext.Current;
+        _usecase.PairUpDone(Connect);
+        _viewerIDs = new List<uint>();
+        _usecase.onDebugMessageReceived(Log);
+        _usecase.OnConnectionDone(OnConnected);
+
+    }
+    void Update()
+    {
+        /*
+        if (_ConnectionDone)
+        {
+            if (_usecase.GetSignalingState() == RTCSignalingState.Stable)
+            {
+                _ConnectionDone = false;
+                ConnectionStabilized?.Invoke();
+            }
+        }
+        */
+    }
+    //After pairing up with viewer, connect WebRTC
+    private void Connect(string id)
+    {
+        //TDOD: make separate ConnecntionDone for all viewers
+        //_usecase.OnConnectionDone((string id) => _ConnectionDone = true);
+        _usecase.ConnectViewer(id);
+    }
+
+    //private bool _ConnectionDone = false;
+    private List<string> _viewerId = new List<string>();
+    public void Refresh()
+    {
+        _usecase.GetPossibleViewersTask(OnViewerIDsRecived);
+    }
+    public List<uint> GetViewerIDs() => _viewerIDs;
+    private void OnViewerIDsRecived(List<uint> viewerIDs)
+    {
+        if (SynchronizationContext.Current == _mainThreadContext)
+        {
+            _viewerIDs = viewerIDs;
+            ViewersIDsRecived?.Invoke();
+        }
+        else
+        {
+            _mainThreadContext.Post(_ =>
+            {
+                _viewerIDs = viewerIDs;
+                ViewersIDsRecived?.Invoke();
+            }, null);
+        }
+    }
+    public void Call(string viewerID)
+    {
+
+
+        if (uint.TryParse(viewerID, out uint viewerIdInt))
+        {
+            _usecase.PairUp(viewerIdInt);
+            _viewerId.Add(viewerID);
+        }
+        else
+        {
+            Debug.LogError("Failed to parse viewer ID: " + viewerID);
+        }
+
+    }
+    public void SetStream(Camera camera)
+    {
+
+        var videoStreamTrack = camera.CaptureStreamTrack(1280, 720);
+        //var videoStreamTrack = _camera.CaptureStreamTrack(640, 360);
+        _usecase.SetVideoTrack(videoStreamTrack);
+    }
+    public List<string> GetViewersId()
+    {
+        return _viewerId;
+    }
+    private void Log(string message)
+    {
+        Debug.Log("[WebRTCMultiClientStreamerPresenter]: " + message);
+    }
+    private void OnConnected(string viewerID)
+    {
+        if (SynchronizationContext.Current == _mainThreadContext)
+        {
+            _viewerId.Add(viewerID);
+            OnViewerConnected?.Invoke(viewerID);
+        }
+        else
+        {
+            _mainThreadContext.Post(_ =>
+            {
+                _viewerId.Add(viewerID);
+                OnViewerConnected?.Invoke(viewerID);
+            }, null);
+        }
+    }
+    //Temporary fix for stopping all 
+    private void OnDestroy()
+    {
+        _usecase.StopAll();
+    }
+}
