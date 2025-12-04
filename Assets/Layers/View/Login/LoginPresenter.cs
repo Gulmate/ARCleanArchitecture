@@ -27,4 +27,9 @@ public class LoginPresenter : MonoBehaviour
         RegisterUseCase registerUseCase = new RegisterUseCase(_autentication);
         registerUseCase.Register(username, password);
     }
+
+    public void SetOffline()
+    {
+        SceneManager.LoadScene("TutorialScene");
+    }
 }

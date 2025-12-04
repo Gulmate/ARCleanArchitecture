@@ -6,7 +6,6 @@ using UnityEngine;
 public class TutorialUseCase
 {
     private Ziphandler ziphandler = new Ziphandler();
-    private DocumentationLogger logger = new DocumentationLogger();
     private string sessionName;
 
     private StepHandler stepHandler = new StepHandler();
@@ -17,40 +16,34 @@ public class TutorialUseCase
     {
         if (stepHandler.HasNextStep())
         {
-            logger.LogToJSON("Next button clicked successfully");
-        }
-        else
-        {
-            logger.LogToJSON("Next button clicked failed - no more steps");
+            stepHandler.NextStep();
         }
     }
+
 
     public void PrevStep()
     {
         if (stepHandler.HasPrevStep())
         {
-            logger.LogToJSON("Previous button clicked successfully");
-        }
-        else
-        {
-            logger.LogToJSON("Previous button clicked failed - no previous steps");
+            stepHandler.PrevStep();
         }
     }
 
-    public void loggerSetup()
+    /*public void loggerSetup()
     {
         sessionName = $"session{DateTime.Now.ToString().Replace(" ","").Replace(":","-")}";
-        logger.setZipPath(Path.Combine(Application.persistentDataPath, $"Logs/{sessionName}.zip"));
-    }
+
+    }*/
 
     public void LoadTutorial(string zipPath)
     {
-        stepHandler.loadSteps(ziphandler.LoadStepsFromZip(zipPath));
-        Dictionary<string, string> logData = new Dictionary<string, string>
+        List<Step> steps = ziphandler.LoadStepsFromZip(zipPath);
+        stepHandler.loadSteps(steps);
+        /*Dictionary<string, string> logData = new Dictionary<string, string>
         {
             { "zipPath", zipPath }
         };
-        logger.LogToJSON("Tutorial loaded from zip", logData);
+        logger.LogToJSON("Tutorial loaded from zip", logData);*/
         
     }
 
@@ -59,6 +52,17 @@ public class TutorialUseCase
         return stepHandler.getCurrentStep();
     }
 
+    public bool isLastStep()
+    {
+        return stepHandler.isLastStep();
+    }
+
+    public bool isFirstStep()
+    {
+        return stepHandler.isFirstStep();
+    }
+
+    //Ide nem kell csak minta
     public void TakeScreenshot(string screenshotPath)
     {
         DateTime now = DateTime.Now;
@@ -74,6 +78,6 @@ public class TutorialUseCase
             { "screenshotPath", newScreenshotPath }
         };
 
-        logger.LogToJSON("Screenshot taken.",logData);
+        //logger.LogToJSON("Screenshot taken.",logData);
     }
 }

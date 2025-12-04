@@ -16,7 +16,7 @@ public class DocumentationLogger
         var jsonLog = JsonUtility.ToJson(new LogEntry
         {
             timestamp = localDate.ToString("yyyy-MM-dd HH:mm:ss"),
-            message = "tutorial loaded",
+            message = "Documentation started",
             attachments = null,
         }, true);
     }

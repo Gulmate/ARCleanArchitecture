@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +15,7 @@ public class TutorialPresenter : MonoBehaviour
     private List<Texture2D> images = new List<Texture2D>();
     private int currentImageIndex = 0;
 
-    private string videoPath;
     private string audioPath;
-    private string text;
 
     public void NextStep()
     {
@@ -28,7 +25,7 @@ public class TutorialPresenter : MonoBehaviour
 
     public void Start()
     {
-        tutorialUseCase.loggerSetup();
+        //tutorialUseCase.loggerSetup();
     }
 
     public void PrevStep()
@@ -40,44 +37,66 @@ public class TutorialPresenter : MonoBehaviour
     public void loadImages()
     {
         List<PicData> stepImageDatas = tutorialUseCase.GetCurrentStep().Images;
+        List<Texture2D> loadedImages = new List<Texture2D>();
+        currentImageIndex = 0;
         foreach (PicData stepImage in stepImageDatas)
         {
+            
             Texture2D texture = new Texture2D(2, 2);
             texture.LoadImage(stepImage.data);
+            loadedImages.Add(texture);
         }
+        images = loadedImages;
     }
 
     public Step LoadTutorial(string zipPath)
     {
         tutorialUseCase.LoadTutorial(zipPath);
+        loadImages();
         return tutorialUseCase.GetCurrentStep();
     }
 
     public Texture2D GetCurrentPic()
     {
+        if(images.Count==0)
+            return null;
         return images[currentImageIndex];
     }
 
     public Texture2D GetNextPic()
     {
+        if(images.Count<=currentImageIndex)
+            return null;
         currentImageIndex++;
         return images[currentImageIndex];
     }
 
     public Texture2D GetPrevPic()
     {
+        if(currentImageIndex<=0)
+            return null;
         currentImageIndex--;
         return images[currentImageIndex];
     }
 
     public string GetVideo()
     {
-        return videoPath;
+        return tutorialUseCase.GetCurrentStep().Video;
     }
 
-    //TODO le vinni infrastrukturaba
+    public bool IsFirstStep()
+    {
+        return tutorialUseCase.isFirstStep();
+    }
+
+    public bool IsLastStep()
+    {
+        return tutorialUseCase.isLastStep();
+    }
+
     public async Task<AudioClip> GetAudio()
     {
+        audioPath=GetAudioPath();
         string url = Path.Combine("file://", audioPath);
 
         using (var audioRequest = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
@@ -97,6 +116,11 @@ public class TutorialPresenter : MonoBehaviour
                 return null;
             }
         }
+    }
+
+    public string GetAudioPath()
+    {
+        return tutorialUseCase.GetCurrentStep().Audio;
     }
 
     public void AddImageToDetect()
@@ -126,7 +150,17 @@ public class TutorialPresenter : MonoBehaviour
 
     public string GetText()
     {
-        return text;
+        return tutorialUseCase.GetCurrentStep().Text;
+    }
+
+    public bool HasNextImage()
+    {
+        return currentImageIndex<images.Count-1;
+    }
+
+    public bool HasPrevImage()
+    {
+        return currentImageIndex>0;
     }
 
     public void TakeScreenshot()

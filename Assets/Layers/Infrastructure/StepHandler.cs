@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
+
 
 public class StepHandler
 {
@@ -29,6 +32,7 @@ public class StepHandler
     {
         steps = newSteps;
         currentStep = 0;
+        Debug.Log("Loaded " + steps.Count + " steps.");
     }
 
     public Step getCurrentStep()
@@ -36,5 +40,13 @@ public class StepHandler
         return steps[currentStep];
     }
 
+    public bool isLastStep()
+    {
+        return currentStep == steps.Count - 1;
+    }
 
+    public bool isFirstStep()
+    {
+        return currentStep == 0;
+    }
 }

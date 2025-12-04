@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using UnityEngine;
 
 public class Ziphandler
 {
@@ -25,7 +26,7 @@ public class Ziphandler
 
     }
 
-    private Step LoadStepFromFolder(IGrouping<string, ZipArchiveEntry> stepFolder)
+    private Step LoadStepFromFolder(IGrouping<string, ZipArchiveEntry> stepFolder, string zipPath)
     {
         var step = new Step();
 
@@ -37,18 +38,21 @@ public class Ziphandler
                 step.Images.Add(LoadPic(entry));
             }
 
-            if(entry.FullName.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
+            if (entry.FullName.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
             {
-                step.Audio = entry.FullName;
+                //step.Audio = Path.Combine(zipPath, entry.FullName);
+                step.Audio = "H:/clash royale king laugh emote sound effect.mp3";
             }
 
-            if(entry.FullName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
+            if (entry.FullName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
-                step.Video= entry.FullName;
+                //step.Video = Path.Combine(zipPath, entry.FullName);
+                //step.Video = "file:///" + zipPath + "/" + entry.FullName;
+                step.Video = "H:/rapidsave.com_every_single_character_for_the_past_3_chapters-sr8pob6a06sb1.mp4";
             }
 
-            if(entry.FullName.EndsWith("txt", StringComparison.OrdinalIgnoreCase))
-                {
+            if (entry.FullName.EndsWith("txt", StringComparison.OrdinalIgnoreCase))
+            {
                 step.Text = LoadText(entry);
             }
         }
@@ -58,27 +62,11 @@ public class Ziphandler
     private string LoadText(ZipArchiveEntry entry)
     {
         string text;
-        using (StreamReader reader= new StreamReader(entry.Open()) )
+        using (StreamReader reader = new StreamReader(entry.Open()))
         {
-            text=reader.ReadToEnd();
+            text = reader.ReadToEnd();
         }
         return text;
-    }
-
-    private byte[] LoadMedia(ZipArchiveEntry entry)
-    {
-        byte[] data;
-
-        using (var stream = new MemoryStream())
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                data = memoryStream.ToArray();
-            }
-        }
-        return data;
-
     }
 
     public List<Step> LoadStepsFromZip(string zipPath)
@@ -98,9 +86,9 @@ public class Ziphandler
                 });
                 foreach (var stepFolder in stepFolders)
                 {
-                    loadedSteps.Add(LoadStepFromFolder(stepFolder));
+                    loadedSteps.Add(LoadStepFromFolder(stepFolder, zipPath));
                 }
-                
+
             }
         }
 
