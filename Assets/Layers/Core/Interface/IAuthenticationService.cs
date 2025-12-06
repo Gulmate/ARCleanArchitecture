@@ -1,7 +1,8 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public interface IAutentication
 {
-    public bool Login(string username, string password);
-    public void Register(string username, string password);
+    public Task<bool> Login(string username, string password);
+    public Task<bool> Register(string email, string password, string firstName, string lastName, string role);
 }

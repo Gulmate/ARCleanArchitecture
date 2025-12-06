@@ -8,8 +8,8 @@ public class RegisterUseCase
         _autentication = autentication;
     }
 
-    public void Register(string username, string password)
+    public void Register(string username, string password, string firstName, string lastName, string role)
     {
-        _autentication.Register(username, password);
+        _autentication.Register(username, password, firstName, lastName, role);
     }
 }

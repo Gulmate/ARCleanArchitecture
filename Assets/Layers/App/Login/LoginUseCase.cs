@@ -1,4 +1,6 @@
 
+using System.Threading.Tasks;
+
 public class LoginUseCase
 {
     private readonly IAutentication _autentication;
@@ -8,7 +10,7 @@ public class LoginUseCase
         _autentication = autentication;
     }
 
-    public bool Login(string username, string password)
+    public Task<bool> Login(string username, string password)
     {
        return  _autentication.Login(username, password);
     }

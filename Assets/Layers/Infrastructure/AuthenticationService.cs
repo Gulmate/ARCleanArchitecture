@@ -1,18 +1,46 @@
-using UnityEngine.SceneManagement;
+using System;
+using System.Collections;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Networking;
 using VContainer;
 
 public class AuthenticationService : IAutentication
 {
     [Inject]
     private readonly IFileHandlerService _logger;
-    public bool Login(string username, string password)
+    public async Task<bool> Login(string email, string password)
     {
-        return DummyLoginCheck(username, password);
+        string json = $"{{ \"email\": \"{email}\", \"password\": \"{password}\" }}";
+
+        return await SendJsonPostRequest("https://localhost:19955/api/Auth/login", json);
     }
 
-    public void Register(string username, string password)
+
+
+    private async Task<bool> SendJsonPostRequest(string URL, string json)
     {
-        DummyRegisterCheck(username, password);
+        using (UnityWebRequest www = UnityWebRequest.Post( URL, json, "application/json"))
+        {
+            await www.SendWebRequest();
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error While Sending: " + www.responseCode);
+                _logger.SaveLog("Login Attempt failed: " + www.error);
+                return false;
+            }
+            else
+            {
+                _logger.SaveLog("Successful login");
+                return true;
+            }
+        }
+    }
+
+    public async Task<bool> Register(string email, string password,string firstName, string lastName, string role)
+    {
+        string json = $"{{ \"email\": \"{email}\", \"password\": \"{password}\", \"firstName\": \"{firstName}\", \"lastName\": \"{lastName}\", \"firstName\": \"{lastName}\" }}";
+        return await SendJsonPostRequest("https://localhost:19955/api/Auth/register", json);
     }
 
     private bool DummyLoginCheck(string username, string password)

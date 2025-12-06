@@ -15,17 +15,17 @@ public class LoginPresenter : MonoBehaviour
         _loginUseCase = new LoginUseCase(_autentication);
     }
 
-    public void Login(string username, string password)
+    public async void Login(string username, string password)
     {
-        if(_loginUseCase.Login(username, password))
+        if(await _loginUseCase.Login(username, password))
         { SceneManager.LoadScene("Mirror"); }
         
     }
 
-    public void Register(string username, string password)
+    public void Register(string username, string password, string firstName, string lastName, string role)
     {
         RegisterUseCase registerUseCase = new RegisterUseCase(_autentication);
-        registerUseCase.Register(username, password);
+        registerUseCase.Register(username, password, firstName, lastName, role);
     }
 
     public void SetOffline()

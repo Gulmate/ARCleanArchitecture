@@ -26,7 +26,7 @@ public class LoginView : MonoBehaviour
         });
         registerButton.onClick.AddListener(() =>
         {
-            _loginPresenter.Register(userNameField.text, passwordField.text);
+            //_loginPresenter.Register(userNameField.text, passwordField.text);
         });
 
         onlineButton.onClick.AddListener(() =>
