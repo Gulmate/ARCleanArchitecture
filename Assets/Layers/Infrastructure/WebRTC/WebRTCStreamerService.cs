@@ -179,4 +179,8 @@ public class WebRTCStreamerService
     {
         return _viewers.ContainsKey(viewerId);
     }
+    public List<string> GetViewerIDs()
+    {
+        return _viewers.Keys.ToList();
+    }
 }

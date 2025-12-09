@@ -76,6 +76,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
         if (SynchronizationContext.Current == _mainThreadContext)
         {
             _viewerIDs = viewerIDs;
+            _viewerIDs.AddRange(_usecase.GetConnectedViewersIDs());
             //_viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
             ViewersIDsRecived?.Invoke();
         }
@@ -84,6 +85,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
             _mainThreadContext.Post(_ =>
             {
                 _viewerIDs = viewerIDs;
+                _viewerIDs.AddRange(_usecase.GetConnectedViewersIDs());
                 //_viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
                 ViewersIDsRecived?.Invoke();
             }, null);

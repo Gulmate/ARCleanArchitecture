@@ -55,14 +55,14 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
 
     private void NewSelected(int arg0)
     {
-        var selectedViewerId = _viewerDropDown.options[_viewerDropDown.value].text;
+        var selectedViewerId = _viewerDropDown.options[arg0].text;
         if(_presenter.IsConnectedTo(selectedViewerId))
         {
-            _callButton.GetComponentInChildren<TMP_Text>().SetText("Disconnect");
+            _callButton.GetComponentInChildren<TextMeshProUGUI>().text="Disconnect";
         }
         else
         {
-            _callButton.GetComponentInChildren<TMP_Text>().SetText("Connect");
+            _callButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connect";
         }
     }
 
@@ -82,16 +82,21 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
         {
             var stringIDs = viewerIDs.ConvertAll(id => id.ToString());
             _viewerDropDown.AddOptions(stringIDs);
+            _viewerDropDown.value = 0;
+            _viewerDropDown.RefreshShownValue();
             _callButton.interactable = true;
             _viewerDropDown.interactable = true;
         }
         else
         {
             _viewerDropDown.AddOptions(new List<string> { "No viewers available" });
+            _viewerDropDown.value = 0;
+            _viewerDropDown.RefreshShownValue();
             _callButton.interactable = false;
             _viewerDropDown.interactable = false;
         }
         _refreshButton.interactable = true;
+        NewSelected(_viewerDropDown.value);
     }
     private void Call()
     {
