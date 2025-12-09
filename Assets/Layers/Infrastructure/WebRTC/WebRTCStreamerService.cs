@@ -175,4 +175,8 @@ public class WebRTCStreamerService
         _updateRunning = true;
         _coroutineRunner.StartCoroutine(WebRTC.Update());
     }
+    public bool IsViewer(string viewerId)
+    {
+        return _viewers.ContainsKey(viewerId);
+    }
 }

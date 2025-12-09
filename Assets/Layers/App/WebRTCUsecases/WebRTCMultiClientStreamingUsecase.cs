@@ -84,4 +84,9 @@ public class WebRTCMultiClientStreamingUsecase
             callback(message);
         };
     }
+
+    internal bool IsConnectedTo(uint viewerID)
+    {
+        return WebRTCStreamerService.Instance.IsViewer(viewerID.ToString());
+    }
 }

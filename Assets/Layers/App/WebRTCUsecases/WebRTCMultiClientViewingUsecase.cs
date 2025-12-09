@@ -51,4 +51,9 @@ public class WebRTCMultiClientViewingUsecase
     {
         WebRTCViewerService.Instance.StopAll();
     }
+    public void StopCurrentConnetionAndOpenNew()
+    {
+        WebRTCViewerService.Instance.Disconnect();
+        WebRTCViewerService.Instance.CreateConnection();
+    }
 }

@@ -56,6 +56,10 @@ public class WebRTCMultiClientViewerPresenter : MonoBehaviour
             Debug.LogError("Video Stream is null.");
         }
     }
+    public void Disconnect()
+    {
+        _usecase.StopCurrentConnetionAndOpenNew();
+    }
     private void Log(string message)
     {
         Debug.Log(message);

@@ -9,6 +9,7 @@ public class WebRTCViewerService
     public event Action<VideoStreamTrack> OnVideoReceived;
     public event Action<AudioStreamTrack> OnAudioReceived;
     public event Action<string> OnDebugMessage;
+    public event Action OnDisconnected;
 
     public event Action<RTCIceCandidate> OnLocalIceCandidate;
     public event Action<RTCSessionDescription> OnLocalAnswerCreated;
@@ -52,6 +53,15 @@ public class WebRTCViewerService
         {
             OnLocalIceCandidate?.Invoke(cand);
         };
+        _peer.OnConnectionStateChange += state =>
+        {
+            OnDebugMessage?.Invoke("Connection state changed: " + state);
+            if(state == RTCPeerConnectionState.Failed)
+            {
+                Disconnect();
+                CreateConnection();
+            }
+        };
     }
 
     public void ReceiveOffer(RTCSessionDescription offer)
@@ -81,12 +91,13 @@ public class WebRTCViewerService
     }
 
 
-    private void Disconnect()
+    public void Disconnect()
     {
         OnDebugMessage?.Invoke("Disconnecting peer...");
         _peer?.Close();
         _peer?.Dispose();
         _peer = null;
+        OnDisconnected?.Invoke();
     }
 
     public void StopAll()

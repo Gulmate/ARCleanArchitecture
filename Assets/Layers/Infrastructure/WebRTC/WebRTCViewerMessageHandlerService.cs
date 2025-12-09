@@ -41,6 +41,16 @@ public class WebRTCViewerMessageHandlerService
         {
             SendSDPMessage(answer);
         };
+        WebRTCViewerService.Instance.OnDisconnected += () =>
+        {
+            SendUnpairMessage();
+        };
+    }
+
+    private void SendUnpairMessage()
+    {
+        DisplayDebugMessage?.Invoke("Sending unpair message to paired client");
+        _webSocketStreamingClientService.Unpair();
     }
 
     private void SendSDPMessage(RTCSessionDescription offer)

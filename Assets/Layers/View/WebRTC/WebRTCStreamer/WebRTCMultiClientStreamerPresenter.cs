@@ -14,6 +14,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     //public event JobDone ConnectionStabilized;
     public event JobDone ViewersIDsRecived;
     public event Action<string> OnViewerConnected;
+    public event Action<string> OnViewerDisconnected;
 
     private WebRTCMultiClientStreamingUsecase _usecase;
 
@@ -39,6 +40,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
         _viewerIDs = new List<uint>();
         _usecase.onDebugMessageReceived(Log);
         _usecase.OnConnectionDone(OnConnected);
+        _usecase.OnViewerDisconnected(OnDisconnected);
 
     }
     void Update()
@@ -63,7 +65,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     }
 
     //private bool _ConnectionDone = false;
-    private List<string> _connectedViewerIds = new List<string>();
+    //private List<string> _connectedViewerIds = new List<string>();
     public void Refresh()
     {
         _usecase.GetPossibleViewersTask(OnViewerIDsRecived);
@@ -74,7 +76,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
         if (SynchronizationContext.Current == _mainThreadContext)
         {
             _viewerIDs = viewerIDs;
-            _viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
+            //_viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
             ViewersIDsRecived?.Invoke();
         }
         else
@@ -82,7 +84,7 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
             _mainThreadContext.Post(_ =>
             {
                 _viewerIDs = viewerIDs;
-                _viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
+                //_viewerIDs.RemoveAll(id => _connectedViewerIds.Contains(id.ToString()));
                 ViewersIDsRecived?.Invoke();
             }, null);
         }
@@ -93,7 +95,10 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
 
         if (uint.TryParse(viewerID, out uint viewerIdInt))
         {
-            _usecase.PairUp(viewerIdInt);
+            if(_usecase.IsConnectedTo(viewerIdInt))
+                _usecase.RemoveViewer(viewerIdInt);
+            else
+                _usecase.PairUp(viewerIdInt);
             //_connectedViewerIds.Add(viewerID);
         }
         else
@@ -109,10 +114,6 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
         //var videoStreamTrack = _camera.CaptureStreamTrack(640, 360);
         _usecase.SetVideoTrack(videoStreamTrack);
     }
-    public List<string> GetViewersId()
-    {
-        return _connectedViewerIds;
-    }
     private void Log(string message)
     {
         Debug.Log("[WebRTCMultiClientStreamerPresenter]: " + message);
@@ -121,16 +122,49 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     {
         if (SynchronizationContext.Current == _mainThreadContext)
         {
-            _connectedViewerIds.Add(viewerID);
+            //_connectedViewerIds.Add(viewerID);
             OnViewerConnected?.Invoke(viewerID);
         }
         else
         {
             _mainThreadContext.Post(_ =>
             {
-                _connectedViewerIds.Add(viewerID);
+                //_connectedViewerIds.Add(viewerID);
                 OnViewerConnected?.Invoke(viewerID);
             }, null);
+        }
+    }
+    private void OnDisconnected(string viewerID)
+    {
+        if (SynchronizationContext.Current == _mainThreadContext)
+        {
+            //_connectedViewerIds.Remove(viewerID);
+            OnViewerDisconnected?.Invoke(viewerID);
+        }
+        else
+        {
+            _mainThreadContext.Post(_ =>
+            {
+                //_connectedViewerIds.Remove(viewerID);
+                OnViewerDisconnected?.Invoke(viewerID);
+            }, null);
+        }
+    }
+    public void RemoveViewer(uint viewerID)
+    {
+        _usecase.RemoveViewer(viewerID);
+    }
+    public bool IsConnectedTo(string viewerID)
+    {
+
+        if (uint.TryParse(viewerID, out uint viewerIdInt))
+        {
+            return _usecase.IsConnectedTo(viewerIdInt);
+        }
+        else
+        {
+            Debug.LogError("Failed to parse viewer ID: " + viewerID);
+            return false;
         }
     }
     //Temporary fix for stopping all 

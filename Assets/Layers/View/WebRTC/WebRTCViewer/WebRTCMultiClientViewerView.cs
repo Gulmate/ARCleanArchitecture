@@ -13,6 +13,8 @@ public class WebRTCMultiClientViewerView : MonoBehaviour
     private RawImage _videoStream;
     [SerializeField]
     private TMP_Text _mainText;
+    [SerializeField]
+    private Button _disconnectButton;
 
 
 
@@ -35,6 +37,14 @@ public class WebRTCMultiClientViewerView : MonoBehaviour
         {
             Debug.LogError("WebRTC Viewer Presenter instance is null.");
         }
+        if(_disconnectButton == null)
+        {
+            Debug.LogError("Disconnect Button is not assigned in the inspector.");
+        }
+        else
+        {
+            _disconnectButton.onClick.AddListener(Disconnect);
+        }
 
     }
 
@@ -56,6 +66,16 @@ public class WebRTCMultiClientViewerView : MonoBehaviour
         {
             _videoStream.texture = texture;
         }
+    }
+    private void Disconnect()
+    {
+        _presenter.Disconnect();
+        _mainText.SetText("Disconnected");
+        if (_videoStream != null)
+        {
+            _videoStream.texture = null;
+        }
+
     }
 
     // Update is called once per frame

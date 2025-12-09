@@ -69,6 +69,9 @@ public class WebSocketStreamingClientService
     {
         _instance.InstanceSendWebSocketMessageToPairClientWithIDOrWithoutID(message, messageID, pairID);
     }
+
+    public void Unpair() => _instance.InstanceUnpair();
+    public void DisconnectedFrom(uint pairID) => _instance.InstanceDisconnectedFrom(pairID);
     private void InstanceSendWebSocketMessageToPairClientWithIDOrWithoutID(string message, int messageID, uint pairID)
     {
         if (_webSocketStreamingClient.ConnectionType == WebSocketEnums.ConnectionType.Viewer
@@ -154,7 +157,7 @@ public class WebSocketStreamingClientService
 
     private void HandleConnectionRequestReply(string message)
     {
-        DTOMessageWrapper dTOMessage = DTOMessageWrapper.ConvertFromMessage(message); 
+        DTOMessageWrapper dTOMessage = DTOMessageWrapper.ConvertFromMessage(message);
         switch ((WebSocketEnums.AnswerType)dTOMessage.Type)
         {
             case WebSocketEnums.AnswerType.Ok:
@@ -500,5 +503,79 @@ public class WebSocketStreamingClientService
     {
         return _instance._webSocketStreamingClient.IDOnServer;
     }
+    private void InstanceUnpair()
+    {
+        if ((_webSocketClientService.State == WebSocketState.Open) &&
+                (Status == WebSocketEnums.ConnectionStatus.Connected)
+            )
+        {
+            if (Type == WebSocketEnums.ConnectionType.Viewer)
+            {
+                DTOMessageWrapper dTOMessage = new DTOMessageWrapper
+                {
+                    Type = (int)WebSocketEnums.ToServerMessageType.ToUnpair,
+                    Message = $"Request unpair from {_webSocketStreamingClient.PairID}",
+                    Payload = null
+                };
+                _webSocketClientService.SendMessageToServer(dTOMessage);
+                _webSocketStreamingClient.PairID = 0;
 
+            }
+            else if (Type == WebSocketEnums.ConnectionType.Streamer)
+            {
+                //Todo: server side unpair for multiple viewers
+                //_webSocketStreamingClient.Pairs.Clear();
+            }
+            else
+            {
+                DisplayDebugMessage?.Invoke($"Not a Streamer or Viewer, connection type: {Type}");
+                return;
+            }
+
+        }
+
+        else if ((_webSocketClientService.State != WebSocketState.Open))
+        {
+            DisplayDebugMessage?.Invoke($"Not Connected to WebSocketServer");
+            return;
+        }
+        else if (Status != WebSocketEnums.ConnectionStatus.Connected)
+        {
+            DisplayDebugMessage?.Invoke($"Not connected to WebSocketServer. Current status: {Status}");
+            return;
+        }
+
+    }
+    private void InstanceDisconnectedFrom(uint pairID)
+    {
+        if (Type == WebSocketEnums.ConnectionType.Streamer)
+        {
+            if (_webSocketStreamingClient.Pairs.Contains(pairID))
+            {
+                DTOMessageWrapper dTOMessage = new DTOMessageWrapper
+                {
+                    Type = (int)WebSocketEnums.ToServerMessageType.ToUnpair,
+                    Message = $"{pairID}",
+                    Payload = null
+                };
+                _webSocketClientService.SendMessageToServer(dTOMessage);
+                _webSocketStreamingClient.Pairs.Remove(pairID);
+            }
+        }
+        else if (Type == WebSocketEnums.ConnectionType.Viewer)
+        {
+            if (_webSocketStreamingClient.PairID == pairID)
+            {
+                DTOMessageWrapper dTOMessage = new DTOMessageWrapper
+                {
+                    Type = (int)WebSocketEnums.ToServerMessageType.ToUnpair,
+                    Message = $"Request unpair from {pairID}",
+                    Payload = null
+                };
+                _webSocketClientService.SendMessageToServer(dTOMessage);
+                _webSocketStreamingClient.PairID = 0;
+            }
+        }
+
+    }
 }

@@ -42,6 +42,16 @@ public class WebRTCStreamerMessageHandlerService
         {
             SendSDPMessage(offer, viewerId);
         };
+        WebRTCStreamerService.Instance.OnViewerDisconnected += (viewerId) =>
+        {
+            Disconnect(viewerId);
+        };
+
+    }
+    private void Disconnect(string viewerId)
+    {
+        DisplayDebugMessage?.Invoke("Disconnecting viewer ID: " + viewerId);
+        _webSocketStreamingClientService.DisconnectedFrom(Convert.ToUInt32(viewerId));
     }
 
     private void SendSDPMessage(RTCSessionDescription offer, string viewerId)

@@ -14,7 +14,9 @@ public class WebSocketEnums
         ToLog,
         ToJoinAsStreamer,
         ToJoinAsViewer,
-        ToGetViewrs
+        ToGetViewrs,
+        ToGetConnectedViewrs,
+        ToUnpair
     }
     [System.Serializable]
     public enum ToOtherClientMessageType

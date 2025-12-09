@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -48,6 +49,21 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
         _presenter.ViewersIDsRecived += RefreshIDs;
         _presenter.SetStream(_camera);
         _presenter.OnViewerConnected += OnConnected;
+        _presenter.OnViewerDisconnected += OnDisconnected;
+        _viewerDropDown.onValueChanged.AddListener(NewSelected);
+    }
+
+    private void NewSelected(int arg0)
+    {
+        var selectedViewerId = _viewerDropDown.options[_viewerDropDown.value].text;
+        if(_presenter.IsConnectedTo(selectedViewerId))
+        {
+            _callButton.GetComponentInChildren<TMP_Text>().SetText("Disconnect");
+        }
+        else
+        {
+            _callButton.GetComponentInChildren<TMP_Text>().SetText("Connect");
+        }
     }
 
     private void Refresh()
@@ -91,5 +107,9 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
         _maintext.SetText($"Connected to {id}!");
         Refresh();
     }
-
+    private void OnDisconnected(string id)
+    {
+        _maintext.SetText($"Disconnected from {id}.");
+        Refresh();
+    }
 }
