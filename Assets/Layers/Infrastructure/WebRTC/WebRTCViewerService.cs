@@ -23,13 +23,15 @@ public class WebRTCViewerService
 
         _rtcConfig = new RTCConfiguration
         {
+            iceServers = Array.Empty<RTCIceServer>()
+            /*
             iceServers = new RTCIceServer[]
             {
                 new RTCIceServer
                 {
                     urls = new [] { "stun:stun.l.google.com:19302" }
                 }
-            }
+            }*/
         };
 
         StartUpdateLoop();

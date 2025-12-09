@@ -29,6 +29,8 @@ public class WebRTCStreamerService
     {
         _rtcConfig = new RTCConfiguration
         {
+            iceServers = Array.Empty<RTCIceServer>()
+            /*
             iceServers = new RTCIceServer[]
             {
                 new RTCIceServer
@@ -36,7 +38,7 @@ public class WebRTCStreamerService
                     urls = new string[]
                     { "stun:stun.l.google.com:19302" }
                 }
-            }
+            }*/
         };
 
         StartUpdateLoop();
