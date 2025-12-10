@@ -48,10 +48,10 @@ public class Ziphandler
 
             if (entry.FullName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
-                step.Video = Path.Combine(zipPath, entry.FullName);
+                //step.Video = Path.Combine(zipPath, entry.FullName);
 
                 //Ekezetet nem szereti es van a Usernameben
-                //step.Video = "H:/rapidsave.com_every_single_character_for_the_past_3_chapters-sr8pob6a06sb1.mp4";
+                step.Video = "H:/rapidsave.com_making_this_cup_of_coffee-ab5ayhqf984b1.mp4";
             }
 
             if (entry.FullName.EndsWith("txt", StringComparison.OrdinalIgnoreCase))

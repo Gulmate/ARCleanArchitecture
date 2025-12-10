@@ -12,8 +12,7 @@ public class TutorialView : MonoBehaviour
     [SerializeField] private Button nextStepButton;
 
     [SerializeField] private Button loadButton;
-    [SerializeField] private Button screenShotButton;
-
+    
     [SerializeField] private Button TextButton;
     [SerializeField] private TextMeshProUGUI tutorialText;
 
@@ -70,11 +69,6 @@ public class TutorialView : MonoBehaviour
             Step first=presenter.LoadTutorial(Application.persistentDataPath + "/Saves/kavefozo.zip");
             tutorialText.text = first.Text;
             CheckContent();
-        });
-
-        screenShotButton.onClick.AddListener(() =>
-        {
-            presenter.TakeScreenshot();
         });
 
         TextButton.onClick.AddListener(() =>

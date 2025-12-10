@@ -5,40 +5,34 @@ using System.IO;
 using System.IO.Compression;
 using UnityEngine;
 
-public class DocumentationLogger
+public class DocumentationLogger : IDocumentationLogger
 {
     private string zipPath = null;
     DateTime localDate;
+    List<LogEntry> logEntries = new List<LogEntry>();
 
     public void setZipPath(string path)
     {
+        localDate = DateTime.Now;
+        Debug.Log($"Setting zip path to: {path}");
         zipPath = path;
-        var jsonLog = JsonUtility.ToJson(new LogEntry
+        logEntries.Clear();
+        logEntries.Add(new LogEntry
         {
             timestamp = localDate.ToString("yyyy-MM-dd HH:mm:ss"),
             message = "Documentation started",
+            level= LogLevel.System,
             attachments = null,
-        }, true);
-    }
-
-    public void LogToJSON(string message, Dictionary<string, string> addedAttachments=null)
-    {
-        localDate = DateTime.Now;
-        string jsonLog = JsonConvert.SerializeObject(new LogEntry
-        {
-            timestamp = localDate.ToString("yyyy-MM-dd HH:mm:ss"),
-            message = message,
-            attachments = addedAttachments,
-        }, Formatting.Indented);
-
+        });
         if (File.Exists(zipPath) == false)
         {
             using (FileStream zipToCreate = new FileStream(zipPath, FileMode.Create))
             {
                 using (ZipArchive archive = new ZipArchive(zipToCreate, ZipArchiveMode.Create))
                 {
-                    ZipArchiveEntry logEntry = archive.CreateEntry("Logs/log.json");
-                    jsonLog = "[\n" + jsonLog + "\n]";
+                    ZipArchiveEntry logEntry = archive.CreateEntry("log.json");
+
+                    var jsonLog = JsonConvert.SerializeObject(logEntries, Formatting.Indented);
                     using (StreamWriter writer = new StreamWriter(logEntry.Open()))
                     {
                         writer.WriteLine(jsonLog);
@@ -46,36 +40,45 @@ public class DocumentationLogger
                 }
             }
         }
-        else
+    }
+
+    public void LogToJSON(string message, LogLevel logLevel, Dictionary<string, string> addedAttachments = null)
+    {
+        localDate = DateTime.Now;
+
+        using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Open))
         {
-            using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Open))
+            using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
             {
-                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+
+                ZipArchiveEntry logEntry;
+
+                logEntry = archive.GetEntry("log.json");
+                string existingContent;
+                using (StreamReader reader = new StreamReader(logEntry.Open()))
                 {
+                    existingContent = reader.ReadToEnd();
+                }
 
-                    ZipArchiveEntry logEntry;
+                logEntries=JsonConvert.DeserializeObject<List<LogEntry>>(existingContent);
 
-                    logEntry = archive.GetEntry("Logs/log.json");
-                    string existingContent;
-                    using (StreamReader reader = new StreamReader(logEntry.Open()))
-                    {
-                        existingContent = reader.ReadToEnd();
-                    }
+                logEntries.Add(new LogEntry
+                {
+                    timestamp = localDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    message = message,
+                    level = logLevel,
+                    attachments = addedAttachments,
+                });
 
-
-                    existingContent = existingContent.TrimEnd('\n', '\r', ' ', ']');
-
-
-                    jsonLog = existingContent + ",\n" + jsonLog + "\n]";
-
-
-                    using (StreamWriter writer = new StreamWriter(logEntry.Open()))
-                    {
-                        writer.WriteLine(jsonLog);
-                    }
+                var jsonLog = JsonConvert.SerializeObject(logEntries, Formatting.Indented);
+                using (StreamWriter writer = new StreamWriter(logEntry.Open()))
+                {
+                    writer.WriteLine(jsonLog);
+                    
                 }
             }
         }
+
     }
 
 }

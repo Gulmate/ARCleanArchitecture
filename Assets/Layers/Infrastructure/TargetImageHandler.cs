@@ -57,7 +57,7 @@ public class TargetImageHandler
         return markerData;
     }
 
-    void OnChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
+    private void OnChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
         foreach (var newImage in eventArgs.added)
         {

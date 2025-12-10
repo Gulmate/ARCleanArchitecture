@@ -7,7 +7,7 @@ public struct ChatMessage : NetworkMessage
     public string text;
 }
 
-public class CustomNetworkManager : NetworkManager
+public class CustomNetworkManager : NetworkManager, INetworkManager
 {
     public override void Awake()
     {
@@ -19,13 +19,13 @@ public class CustomNetworkManager : NetworkManager
 
         autoCreatePlayer = false;
         offlineScene = "Mirror";
-        onlineScene = "Connection";
+        onlineScene = "AuthMenu";
     }
 
     public void StartServerFromInput(string ipInput, string portInput)
     {
-        if (ipInput== null || portInput == null) return;
-        
+        if (ipInput == null || portInput == null) return;
+
         networkAddress = ipInput;
 
         if (ushort.TryParse(portInput, out ushort port))
@@ -81,7 +81,7 @@ public class CustomNetworkManager : NetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        
+
         if (mode == NetworkManagerMode.ServerOnly)
         {
             Debug.Log("Dedicated server started — loading ServerScene");
@@ -117,7 +117,7 @@ public class CustomNetworkManager : NetworkManager
 
         if (mode == NetworkManagerMode.ClientOnly)
         {
-            SceneManager.LoadScene("Scenes/Connection");
+            SceneManager.LoadScene("Scenes/AuthMenu");
         }
     }
 

@@ -1,9 +1,15 @@
-﻿public class ConnectUseCase
+﻿using Mirror;
+using System;
+
+public class ConnectUseCase
 {
-    private readonly CustomNetworkManager _networkManager;
-    public ConnectUseCase(CustomNetworkManager networkManager)
+    private CustomNetworkManager _networkManager;
+    private readonly IDocumentationLogger _documentationLogger;
+    string sessionName;
+    public ConnectUseCase(IDocumentationLogger logger)
     {
-        _networkManager = networkManager;
+        
+        _documentationLogger = logger;
     }
     public void Connect(string ip, string port)
     {
@@ -12,5 +18,16 @@
     public void StartHost(string ip, string port)
     {
         _networkManager.StartServerFromInput(ip, port);
+    }
+
+    public void SetToOnline(CustomNetworkManager networkManager)
+    {
+        _networkManager = networkManager;
+    }
+
+    public void loggerSetup(string dataPath)
+    {
+        sessionName = $"session{DateTime.Now.ToString().Replace(" ", "").Replace(":", "-")}";
+        _documentationLogger.setZipPath($"{dataPath}/{sessionName}.zip");
     }
 }

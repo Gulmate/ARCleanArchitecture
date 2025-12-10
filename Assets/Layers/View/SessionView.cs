@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 public class SessionView: MonoBehaviour
 {
-    private CustomNetworkManager networkManager;
+    [Inject]
+    private SessionPresenter _sessionPresenter;
 
     [SerializeField]
     private Button streamButton;
@@ -13,9 +15,7 @@ public class SessionView: MonoBehaviour
 
     public void Start()
     {
-        networkManager = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>();
-
-        streamButton.onClick.AddListener(() => { networkManager.ChangeSceneToStream(); });
-        viewButton.onClick.AddListener(() => { networkManager.ChangeSceneToView(); });
+        streamButton.onClick.AddListener(() => { _sessionPresenter.ChangeToStream(); });
+        viewButton.onClick.AddListener(() => { _sessionPresenter.ChangeToView(); });
     }
 }

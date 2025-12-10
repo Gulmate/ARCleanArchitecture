@@ -8,17 +8,18 @@ public class LoginPresenter : MonoBehaviour
 
     [Inject]
     private readonly IAutentication _autentication;
-
     [Inject]
+    private readonly IDocumentationLogger _documentationLogger;
+
     void Awake()
     {
-        _loginUseCase = new LoginUseCase(_autentication);
+        _loginUseCase = new LoginUseCase(_autentication, _documentationLogger);
     }
 
-    public async void Login(string username, string password)
+    public async void Login(string email, string password)
     {
-        if(await _loginUseCase.Login(username, password))
-        { SceneManager.LoadScene("Mirror"); }
+        if(await _loginUseCase.Login(email, password))
+        { SceneManager.LoadScene("Connection"); }
         
     }
 
