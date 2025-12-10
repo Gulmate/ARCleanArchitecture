@@ -25,7 +25,6 @@ public class LoginView : MonoBehaviour
         {
             registerPanel.SetActive(true);
             loginPanel.SetActive(false);
-            //_loginPresenter.Register(userNameField.text, passwordField.text);
         });
     }
 

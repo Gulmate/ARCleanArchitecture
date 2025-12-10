@@ -880,7 +880,6 @@ MonoBehaviour:
   changePanel: {fileID: 1062068271}
   onlineButton: {fileID: 1331596932}
   offlineButton: {fileID: 1178797577}
-  networkManagerPrefab: {fileID: 7077010043955366928, guid: 2e2d2cec17ba20b468fb7b1865eee573, type: 3}
 --- !u!1 &450917559
 GameObject:
   m_ObjectHideFlags: 0
