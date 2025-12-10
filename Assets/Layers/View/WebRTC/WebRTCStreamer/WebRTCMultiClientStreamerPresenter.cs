@@ -15,9 +15,11 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     public event JobDone ViewersIDsRecived;
     public event Action<string> OnViewerConnected;
     public event Action<string> OnViewerDisconnected;
+    public event Action<string> OnPairingFailed;
 
     private WebRTCMultiClientStreamingUsecase _usecase;
 
+    private string lastID = "";
     private List<uint> _viewerIDs;
 
     [Inject]
@@ -59,6 +61,21 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
     //After pairing up with viewer, connect WebRTC
     private void Connect(string id)
     {
+        if(string.IsNullOrEmpty(id))
+        {
+            if (SynchronizationContext.Current == _mainThreadContext)
+            {
+                OnPairingFailed?.Invoke(lastID);
+            }
+            else
+            {
+                _mainThreadContext.Post(_ =>
+                {
+                    OnPairingFailed?.Invoke(lastID);
+                }, null);
+            }
+            return;
+        }
         //TDOD: make separate ConnecntionDone for all viewers
         //_usecase.OnConnectionDone((string id) => _ConnectionDone = true);
         _usecase.ConnectViewer(id);
@@ -97,10 +114,13 @@ public class WebRTCMultiClientStreamerPresenter : MonoBehaviour
 
         if (uint.TryParse(viewerID, out uint viewerIdInt))
         {
-            if(_usecase.IsConnectedTo(viewerIdInt))
+            if(_usecase.IsConnectedTo(viewerIdInt)){
                 _usecase.RemoveViewer(viewerIdInt);
-            else
+            }
+            else{
+                lastID = viewerID;
                 _usecase.PairUp(viewerIdInt);
+            }
             //_connectedViewerIds.Add(viewerID);
         }
         else

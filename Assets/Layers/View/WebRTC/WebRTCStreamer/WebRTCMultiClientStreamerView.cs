@@ -50,6 +50,7 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
         _presenter.SetStream(_camera);
         _presenter.OnViewerConnected += OnConnected;
         _presenter.OnViewerDisconnected += OnDisconnected;
+        _presenter.OnPairingFailed += OnPairingFailed;
         _viewerDropDown.onValueChanged.AddListener(NewSelected);
     }
 
@@ -115,6 +116,11 @@ public class WebRTCMultiClientStreamerView : MonoBehaviour
     private void OnDisconnected(string id)
     {
         _maintext.SetText($"Disconnected from {id}.");
+        Refresh();
+    }
+    private void OnPairingFailed(string id)
+    {
+        _maintext.SetText($"Pairing with {id} failed.");
         Refresh();
     }
 }

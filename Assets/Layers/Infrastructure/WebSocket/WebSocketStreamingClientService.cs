@@ -211,7 +211,15 @@ public class WebSocketStreamingClientService
                 DisplayDebugMessage?.Invoke($"Connection request received.");
                 break;
             case WebSocketEnums.AnswerType.Err:
+                //Temp fix for pair up failure
                 DisplayDebugMessage?.Invoke($"Error message recived: {dTOMessage.Message}");
+                if(dTOMessage.Message.Contains("pair", StringComparison.OrdinalIgnoreCase))
+                {
+                    DisplayDebugMessage?.Invoke($"Pair up failed.");
+                    PaierUpDone?.Invoke();
+                    if (newVersion)
+                        PaierUpDoneWithID?.Invoke("");
+                }
                 break;
             default:
                 DisplayDebugMessage?.Invoke($"Unknown message type: {dTOMessage.Type}");
