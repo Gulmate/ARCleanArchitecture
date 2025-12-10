@@ -6,6 +6,7 @@ using VContainer;
 public class LoginView : MonoBehaviour
 {
     [SerializeField] private GameObject loginPanel;
+    [SerializeField] private GameObject registerPanel;
     [SerializeField] private TMP_InputField userNameField;
     [SerializeField] private TMP_InputField passwordField;
     [SerializeField] private Button loginButton;
@@ -22,6 +23,8 @@ public class LoginView : MonoBehaviour
         });
         registerButton.onClick.AddListener(() =>
         {
+            registerPanel.SetActive(true);
+            loginPanel.SetActive(false);
             //_loginPresenter.Register(userNameField.text, passwordField.text);
         });
     }
