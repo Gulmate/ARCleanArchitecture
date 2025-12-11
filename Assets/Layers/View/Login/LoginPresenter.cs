@@ -19,7 +19,7 @@ public class LoginPresenter : MonoBehaviour
     public async void Login(string email, string password)
     {
         if(await _loginUseCase.Login(email, password))
-        { SceneManager.LoadScene("Connection"); }
+        { SceneManager.LoadScene("SessionStart"); }
         
     }
 

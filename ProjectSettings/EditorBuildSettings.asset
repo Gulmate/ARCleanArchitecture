@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TutorialScene.unity
     guid: 5306a9e9850aa3d40bf983f75e025301
   - enabled: 1
-    path: Assets/Scenes/Connection.unity
+    path: Assets/Scenes/SessionStart.unity
     guid: 470eab9c38250194d88529c2d9ee9a1f
   - enabled: 1
     path: Assets/Scenes/ServerScene.unity

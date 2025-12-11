@@ -1,4 +1,5 @@
-﻿using VContainer;
+﻿using System.Collections.Generic;
+using VContainer;
 
 public class SessionPresenter
 {
@@ -15,8 +16,13 @@ public class SessionPresenter
         useCase.ChangeToStream();
     }
 
-    public void ChangeToView()
+    public void ChangeToView(int id)
     {
-        useCase.ChangeToView();
+        useCase.ChangeToView(id);
+    }
+
+    public List<SessionInfo> UpdateSessionList()
+    {
+        return useCase.GetSessionList();
     }
 }

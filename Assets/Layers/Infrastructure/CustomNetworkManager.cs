@@ -1,14 +1,41 @@
 using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public struct ChatMessage : NetworkMessage
+public class SessionInfo
 {
-    public string text;
+    public int sessionId;
+    public string sessionName;
+    public int numberOfViewers;
+    public List<int> conenctionIds = new List<int>();
+}
+
+public struct SessionMessage : NetworkMessage
+{
+    public string name;
+}
+
+public struct SessionListMessage : NetworkMessage
+{
+    public List<SessionInfo> sessions;
+}
+
+public struct TargetedMessage : NetworkMessage
+{
+    public string content;
+}
+
+public struct JoinedSession: NetworkMessage
+{
+    public int sessionId;
 }
 
 public class CustomNetworkManager : NetworkManager, INetworkManager
 {
+    List<SessionInfo> sessions = new List<SessionInfo>();
+    private int idCounter = 0;
+
     public override void Awake()
     {
         TelepathyTransport telepathy = gameObject.AddComponent<TelepathyTransport>();
@@ -81,35 +108,120 @@ public class CustomNetworkManager : NetworkManager, INetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
+        NetworkServer.RegisterHandler<SessionMessage>(onHostedSession);
+        NetworkServer.RegisterHandler<TargetedMessage>(OnTargetedMessageReceived);
+        NetworkServer.RegisterHandler<JoinedSession>(OnJoinedSession);
 
         if (mode == NetworkManagerMode.ServerOnly)
         {
             Debug.Log("Dedicated server started — loading ServerScene");
-            NetworkServer.RegisterHandler<ChatMessage>(OnChatMessage);
             SceneManager.LoadScene("ServerScene");
 
         }
     }
 
-    void OnChatMessage(NetworkConnectionToClient conn, ChatMessage msg)
+    private void OnJoinedSession(NetworkConnectionToClient client, JoinedSession session)
     {
-        Debug.Log($"Server received chat: {msg.text} from {conn.address}");
-        // e.g. broadcast to all clients
+        sessions[session.sessionId].numberOfViewers += 1;
+        sessions[session.sessionId].conenctionIds.Add(client.connectionId);
+    }
+
+    private void OnLeftSession(NetworkConnectionToClient client, JoinedSession session)
+    {
+        sessions[session.sessionId].numberOfViewers -= 1;
+        sessions[session.sessionId].conenctionIds.Remove(client.connectionId);
+    }
+
+    public void OnTargetedMessageReceived(NetworkConnectionToClient conn, TargetedMessage message)
+    {
+        Debug.Log("Server: Received TargetedMessage from client: " + message.content);
+        Debug.Log("Server: Finding session for connection ID " + conn.connectionId);
+        SessionInfo currInfo = sessions.Find(s => s.conenctionIds.Contains(conn.connectionId));
+        Debug.Log("Server: Found session " + currInfo.sessionName + " for connection ID " + conn.connectionId);
+        Debug.Log("Server: Forwarding TargetedMessage to " + currInfo.conenctionIds.Count + " clients in session " + currInfo.sessionName);
+        foreach (int connectionId in currInfo.conenctionIds)
+        {
+            if (NetworkServer.connections.TryGetValue(connectionId, out NetworkConnectionToClient targetConn))
+            {
+                TargetedMessage msg = new TargetedMessage
+                {
+                    content = message.content
+                };
+                targetConn.Send(msg);
+            }
+        }
+    }
+
+    public void HostSession(string name)
+    { 
+        var msg = new SessionMessage
+        {
+            name = name
+        };
+        NetworkClient.Send(msg);
+    }
+
+    public void SendTargetedMessage(string content)
+    {
+        var msg = new TargetedMessage
+        {
+            content = content
+        };
+        NetworkClient.Send(msg);
+    }
+
+    public void JoinSession(int id)
+    {
+        var msg = new JoinedSession
+        {
+            sessionId = id
+        };
+        NetworkClient.Send(msg);
+    }
+
+    private void onHostedSession(NetworkConnectionToClient client, SessionMessage message)
+    {
+        SessionInfo newSession = new SessionInfo
+        {
+            sessionId = idCounter,
+            sessionName = message.name,
+            numberOfViewers = 0,
+            conenctionIds = new List<int> { client.connectionId }
+        };
+        sessions.Add(newSession);
+        idCounter += 1;
+        var msg = new SessionListMessage
+        {
+            sessions = sessions
+        };
         NetworkServer.SendToAll(msg);
+        //NetworkServer.connections[client.connectionId].Send(msg);
+    }
+
+
+    public List<SessionInfo> GetSessions()
+    {
+        return sessions;
+    }
+
+    private void OnClientSessionMessage(SessionListMessage msg)
+    {
+        Debug.Log("Client: Received SessionMessage from server.");
+        sessions = msg.sessions;
+        Debug.Log("Client: There are " + sessions.Count + " sessions available.");
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        NetworkClient.RegisterHandler<ChatMessage>(OnClientChatMessage);
-        Debug.Log("Client: ChatMessage handler registered.");
+        NetworkClient.RegisterHandler<SessionListMessage>(OnClientSessionMessage);
+        NetworkClient.RegisterHandler<TargetedMessage>(OnClientTargetedMessageReceived);
     }
 
-    void OnClientChatMessage(ChatMessage msg)
+    private void OnClientTargetedMessageReceived(TargetedMessage message)
     {
-        Debug.Log($"Client received chat: {msg.text}");
+        Debug.Log("Client: Received TargetedMessage from server: " + message.content);
     }
-
 
     public override void OnClientConnect()
     {

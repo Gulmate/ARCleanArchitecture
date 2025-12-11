@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class SessionUseCase
 {
@@ -15,11 +17,18 @@ public class SessionUseCase
     {
         logger.LogToJSON("User choose streaming", LogLevel.User);
         networkManager.ChangeSceneToStream();
+        networkManager.HostSession("random");
     }
 
-    public void ChangeToView()
+    public void ChangeToView(int id)
     {
         logger.LogToJSON("User choose viewing", LogLevel.User);
         networkManager.ChangeSceneToView();
+        networkManager.JoinSession(id);
+    }
+
+    public List<SessionInfo> GetSessionList()
+    {
+        return  networkManager.GetSessions();
     }
 }
