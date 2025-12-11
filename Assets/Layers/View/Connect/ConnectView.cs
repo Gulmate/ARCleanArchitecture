@@ -14,6 +14,8 @@ public class ConnectView : MonoBehaviour
     [SerializeField] private GameObject changePanel;
     [SerializeField] private Button onlineButton;
     [SerializeField] private Button offlineButton;
+    
+    
 
     [Inject]
     private readonly ConnectPresenter _connectPresenter;
