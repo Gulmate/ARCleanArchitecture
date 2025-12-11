@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using UnityEngine;
 
 public class Ziphandler
 {
@@ -89,7 +88,9 @@ public class Ziphandler
                 });
                 foreach (var stepFolder in stepFolders)
                 {
-                    loadedSteps.Add(LoadStepFromFolder(stepFolder, zipPath));
+                    var step = LoadStepFromFolder(stepFolder, zipPath);
+                    step.StepNumber = loadedSteps.Count + 1;
+                    loadedSteps.Add(step);
                 }
 
             }

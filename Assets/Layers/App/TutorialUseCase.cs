@@ -29,21 +29,10 @@ public class TutorialUseCase
         }
     }
 
-    /*public void loggerSetup()
-    {
-        sessionName = $"session{DateTime.Now.ToString().Replace(" ","").Replace(":","-")}";
-
-    }*/
-
     public void LoadTutorial(string zipPath)
     {
         List<Step> steps = ziphandler.LoadStepsFromZip(zipPath);
         stepHandler.loadSteps(steps);
-        /*Dictionary<string, string> logData = new Dictionary<string, string>
-        {
-            { "zipPath", zipPath }
-        };
-        logger.LogToJSON("Tutorial loaded from zip", logData);*/
         
     }
 
@@ -78,6 +67,5 @@ public class TutorialUseCase
             { "screenshotPath", newScreenshotPath }
         };
 
-        //logger.LogToJSON("Screenshot taken.",logData);
     }
 }

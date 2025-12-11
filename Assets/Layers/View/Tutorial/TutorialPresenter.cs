@@ -79,6 +79,11 @@ public class TutorialPresenter : MonoBehaviour
         return images[currentImageIndex];
     }
 
+    public int GetCurrentStepNumber()
+    {
+        return tutorialUseCase.GetCurrentStep().StepNumber;
+    }
+
     public string GetVideo()
     {
         return tutorialUseCase.GetCurrentStep().Video;

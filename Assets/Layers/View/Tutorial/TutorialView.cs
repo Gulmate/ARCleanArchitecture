@@ -8,6 +8,7 @@ using VContainer;
 
 public class TutorialView : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI stepNumberText;
     [SerializeField] private Button prevStepButton;
     [SerializeField] private Button nextStepButton;
 
@@ -50,10 +51,12 @@ public class TutorialView : MonoBehaviour
     {
         prevStepButton.onClick.AddListener(() =>
         {
+            
             presenter.PrevStep();
             tutorialText.text = presenter.GetText();
             CheckContent();
             ActivateText();
+            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
             tutorialText.text = presenter.GetText();
         });
         nextStepButton.onClick.AddListener(() =>
@@ -62,11 +65,13 @@ public class TutorialView : MonoBehaviour
             tutorialText.text = presenter.GetText();
             CheckContent();
             ActivateText();
+            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
             tutorialText.text = presenter.GetText();
         });
         loadButton.onClick.AddListener(() =>
         {
             Step first=presenter.LoadTutorial(Application.persistentDataPath + "/Saves/kavefozo.zip");
+            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
             tutorialText.text = first.Text;
             CheckContent();
         });

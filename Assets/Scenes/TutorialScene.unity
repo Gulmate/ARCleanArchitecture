@@ -245,7 +245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5670268278661206170, guid: 18709a5ace4fb0e4c8c4ba3fa1864351, type: 3}
       propertyPath: m_text
-      value: Step2
+      value: StepTitle
       objectReference: {fileID: 0}
     - target: {fileID: 6502354743060351039, guid: 18709a5ace4fb0e4c8c4ba3fa1864351, type: 3}
       propertyPath: m_Texture
@@ -270,6 +270,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8767545880869222465, guid: 18709a5ace4fb0e4c8c4ba3fa1864351, type: 3}
+    - {fileID: 3279082631027651990, guid: 18709a5ace4fb0e4c8c4ba3fa1864351, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 542353957291660239, guid: 18709a5ace4fb0e4c8c4ba3fa1864351, type: 3}
       insertIndex: -1
@@ -309,6 +310,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &176196065 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5670268278661206170, guid: 18709a5ace4fb0e4c8c4ba3fa1864351, type: 3}
+  m_PrefabInstance: {fileID: 176196061}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &176196066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,6 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1630c3ff4d2f1894bbcfb80d2604d362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stepNumberText: {fileID: 176196065}
   prevStepButton: {fileID: 669110861}
   nextStepButton: {fileID: 669110860}
   loadButton: {fileID: 1165028103}
