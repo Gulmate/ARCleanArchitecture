@@ -3,34 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SessionInfo
-{
-    public int sessionId;
-    public string sessionName;
-    public int numberOfViewers;
-    public List<int> conenctionIds = new List<int>();
-}
-
-public struct SessionMessage : NetworkMessage
-{
-    public string name;
-}
-
-public struct SessionListMessage : NetworkMessage
-{
-    public List<SessionInfo> sessions;
-}
-
-public struct TargetedMessage : NetworkMessage
-{
-    public string content;
-}
-
-public struct JoinedSession: NetworkMessage
-{
-    public int sessionId;
-}
-
 public class CustomNetworkManager : NetworkManager, INetworkManager
 {
     List<SessionInfo> sessions = new List<SessionInfo>();

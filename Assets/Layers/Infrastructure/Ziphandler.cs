@@ -40,17 +40,11 @@ public class Ziphandler
             if (entry.FullName.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
             {
                 step.Audio = Path.Combine(zipPath, entry.FullName);
-
-                //Ekezetet nem szereti es van a Usernameben
-                //step.Audio = "H:/clash royale king laugh emote sound effect.mp3";
             }
 
             if (entry.FullName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
-                //step.Video = Path.Combine(zipPath, entry.FullName);
-
-                //Ekezetet nem szereti es van a Usernameben
-                step.Video = "H:/rapidsave.com_making_this_cup_of_coffee-ab5ayhqf984b1.mp4";
+                step.Video = Path.Combine(zipPath, entry.FullName);
             }
 
             if (entry.FullName.EndsWith("txt", StringComparison.OrdinalIgnoreCase))
