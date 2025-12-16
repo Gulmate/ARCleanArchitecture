@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -6,26 +5,30 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using VContainer;
 
 public class TutorialPresenter : MonoBehaviour
 {
-    private TutorialUseCase tutorialUseCase = new TutorialUseCase();
+    private TutorialUseCase tutorialUseCase;
     private DetectUseCase detectUseCase;
+
+    [Inject]
+    private IStepHandler stepHandler;
 
     private List<Texture2D> images = new List<Texture2D>();
     private int currentImageIndex = 0;
 
     private string audioPath;
 
+    void Start()
+    {
+        tutorialUseCase = new TutorialUseCase(stepHandler);
+    }
+
     public void NextStep()
     {
         tutorialUseCase.NextStep();
         loadImages();
-    }
-
-    public void Start()
-    {
-        //tutorialUseCase.loggerSetup();
     }
 
     public void PrevStep()
@@ -36,7 +39,7 @@ public class TutorialPresenter : MonoBehaviour
 
     public void loadImages()
     {
-        List<PicData> stepImageDatas = tutorialUseCase.GetCurrentStep().Images;
+        List<PicData> stepImageDatas = tutorialUseCase.GetCurrentStepImages();
         List<Texture2D> loadedImages = new List<Texture2D>();
         currentImageIndex = 0;
         foreach (PicData stepImage in stepImageDatas)
@@ -53,7 +56,15 @@ public class TutorialPresenter : MonoBehaviour
     {
         tutorialUseCase.LoadTutorial(zipPath);
         loadImages();
-        return tutorialUseCase.GetCurrentStep();
+
+        return new Step()
+        {
+            StepNumber = stepHandler.getCurrentStep().StepNumber,
+            Images = tutorialUseCase.GetCurrentStepImages(),
+            Text = tutorialUseCase.GetTutorialText(),
+            Video = tutorialUseCase.GetCurrentStepVideo(),
+            Audio = tutorialUseCase.GetCurrentStepAudio()
+        };
     }
 
     public Texture2D GetCurrentPic()
@@ -81,22 +92,22 @@ public class TutorialPresenter : MonoBehaviour
 
     public int GetCurrentStepNumber()
     {
-        return tutorialUseCase.GetCurrentStep().StepNumber;
+        return stepHandler.getCurrentStep().StepNumber;
     }
 
     public string GetVideo()
     {
-        return tutorialUseCase.GetCurrentStep().Video;
+        return tutorialUseCase.GetCurrentStepVideo();
     }
 
     public bool IsFirstStep()
     {
-        return tutorialUseCase.isFirstStep();
+        return stepHandler.isFirstStep();
     }
 
     public bool IsLastStep()
     {
-        return tutorialUseCase.isLastStep();
+        return stepHandler.isLastStep();
     }
 
     public async Task<AudioClip> GetAudio()
@@ -125,37 +136,19 @@ public class TutorialPresenter : MonoBehaviour
 
     public string GetAudioPath()
     {
-        return tutorialUseCase.GetCurrentStep().Audio;
+        return tutorialUseCase.GetCurrentStepAudio();
     }
 
     public void AddImageToDetect()
     {
-        Texture2D imageToAdd = new Texture2D(2, 2);
-
-        /*using (var stream = File.Open(Path.Combine(Application.streamingAssetsPath, "qrtest.png"), FileMode.Open))
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                imageToAdd.LoadImage(memoryStream.ToArray());
-            }
-        }*/
-        using (var stream = File.Open(Path.Combine(Application.persistentDataPath, "qrtest.png"), FileMode.Open))
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                imageToAdd.LoadImage(memoryStream.ToArray());
-            }
-        }
-
-        detectUseCase.AddImage(imageToAdd);
+        //Idekerül a kep hozzadas logika
+        //detectUseCase.AddImage(byte[]);
     }
 
 
     public string GetText()
     {
-        return tutorialUseCase.GetCurrentStep().Text;
+        return tutorialUseCase.GetTutorialText();
     }
 
     public bool HasNextImage()
@@ -168,7 +161,8 @@ public class TutorialPresenter : MonoBehaviour
         return currentImageIndex>0;
     }
 
-    public void TakeScreenshot()
+    //Screenshot fuggvenyek ahova kell
+    /*public void TakeScreenshot()
     {
         string screenshotPath = Application.persistentDataPath + "/screenshot_placeholder.png";
         ScreenCapture.CaptureScreenshot("Assets/screenshot_placeholder.png");
@@ -182,9 +176,9 @@ public class TutorialPresenter : MonoBehaviour
         while (!File.Exists(screenshotPath))
             yield return null;
 
-        tutorialUseCase.TakeScreenshot(screenshotPath);
+        documentationUseCase.TakeScreenshot(screenshotPath, Application.persistentDataPath);
         File.Delete(screenshotPath);
-    }
+    }*/
 
     public void InitUseCase(ARTrackedImageManager imageTrackingManager, XRReferenceImageLibrary serializedLibrary)
     {

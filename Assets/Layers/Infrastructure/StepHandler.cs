@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-
-public class StepHandler
+public class StepHandler : IStepHandler
 {
     private List<Step> steps = new List<Step>();
     private int currentStep = 0;
@@ -32,7 +29,6 @@ public class StepHandler
     {
         steps = newSteps;
         currentStep = 0;
-        Debug.Log("Loaded " + steps.Count + " steps.");
     }
 
     public Step getCurrentStep()

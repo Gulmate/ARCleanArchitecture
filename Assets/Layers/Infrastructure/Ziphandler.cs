@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-public class Ziphandler
+public class Ziphandler : IZiphandler
 {
 
     private PicData LoadPic(ZipArchiveEntry pic)

@@ -1,15 +1,8 @@
-﻿using System;
-
+﻿
 public class ConnectUseCase
 {
     private INetworkManager _networkManager;
-    private readonly IDocumentationLogger _documentationLogger;
-    string sessionName;
-    public ConnectUseCase(IDocumentationLogger logger)
-    {
-        
-        _documentationLogger = logger;
-    }
+
     public void Connect(string ip, string port)
     {
         _networkManager.Connect(ip, port);
@@ -22,11 +15,5 @@ public class ConnectUseCase
     public void SetToOnline(INetworkManager networkManager)
     {
         _networkManager = networkManager;
-    }
-
-    public void loggerSetup(string dataPath)
-    {
-        sessionName = $"session{DateTime.Now.ToString().Replace(" ", "").Replace(":", "-")}";
-        _documentationLogger.setZipPath($"{dataPath}/{sessionName}.zip");
     }
 }

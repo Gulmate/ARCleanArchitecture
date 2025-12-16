@@ -7,6 +7,8 @@ public class TutorialScope: LifetimeScope
     {
         builder.RegisterComponentInHierarchy<TutorialView>();
 
+        builder.Register<StepHandler>(Lifetime.Scoped).AsImplementedInterfaces();
+
         builder.RegisterComponentOnNewGameObject<TutorialPresenter>(Lifetime.Scoped, "TutorialPresenter");
     }
 }

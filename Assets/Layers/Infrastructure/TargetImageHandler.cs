@@ -1,8 +1,9 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-public class TargetImageHandler
+public class TargetImageHandler : ITargetImageHandler
 {
 
     private ARTrackedImageManager imageManager;
@@ -19,9 +20,18 @@ public class TargetImageHandler
         imageManager.CreateRuntimeLibrary(library);
     }
 
-    public void AddImage(Texture2D imageToAdd)
+    public void AddImage(byte[] pictureData)
     {
-        
+        Texture2D imageToAdd = new Texture2D(2, 2);
+
+        using (var stream = File.Open(Path.Combine(Application.persistentDataPath, "qrtest.png"), FileMode.Open))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                imageToAdd.LoadImage(memoryStream.ToArray());
+            }
+        }
 
         if (!(ARSession.state == ARSessionState.SessionInitializing || ARSession.state == ARSessionState.SessionTracking))
             return;

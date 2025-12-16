@@ -1,10 +1,9 @@
-using UnityEngine;
 
 public class DetectUseCase
 {
-    private TargetImageHandler targetImageHandler;
+    private ITargetImageHandler targetImageHandler;
 
-    public DetectUseCase(TargetImageHandler targetImageHandler)
+    public DetectUseCase(ITargetImageHandler targetImageHandler)
     {
         this.targetImageHandler = targetImageHandler;
     }
@@ -19,8 +18,8 @@ public class DetectUseCase
         targetImageHandler.StopDetection();
     }
 
-    public void AddImage(Texture2D texture)
+    public void AddImage(byte[] pictureData)
     {
-        targetImageHandler.AddImage(texture);
+        targetImageHandler.AddImage(pictureData);
     }
 }

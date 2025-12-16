@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-
+﻿using System.Collections.Generic;
 public class TutorialUseCase
 {
-    private Ziphandler ziphandler = new Ziphandler();
-    private string sessionName;
+    private IZiphandler ziphandler = new Ziphandler();
 
-    private StepHandler stepHandler = new StepHandler();
+    private IStepHandler stepHandler;
 
-    
+    public TutorialUseCase(IStepHandler handler)
+    {
+        stepHandler = handler;
+    }
 
     public void NextStep()
     {
@@ -33,39 +31,26 @@ public class TutorialUseCase
     {
         List<Step> steps = ziphandler.LoadStepsFromZip(zipPath);
         stepHandler.loadSteps(steps);
-        
     }
 
-    public Step GetCurrentStep()
+    public string GetTutorialText()
     {
-        return stepHandler.getCurrentStep();
+        return stepHandler.getCurrentStep().Text;
     }
 
-    public bool isLastStep()
+    public List<PicData> GetCurrentStepImages()
     {
-        return stepHandler.isLastStep();
+        return stepHandler.getCurrentStep().Images;
     }
 
-    public bool isFirstStep()
+    public string GetCurrentStepAudio()
     {
-        return stepHandler.isFirstStep();
+        return stepHandler.getCurrentStep().Audio;
     }
 
-    //Ide nem kell csak minta
-    public void TakeScreenshot(string screenshotPath)
+    public string GetCurrentStepVideo()
     {
-        DateTime now = DateTime.Now;
-        string newScreenshotPath = Path.Combine(Application.persistentDataPath,$"/Logs/{sessionName}.zip/Logs/screenshot_{now.ToString().Replace(" ", "").Replace(":", "-")}.png");
-        Debug.Log(newScreenshotPath);
-        ziphandler.saveScreenshotToZip(
-            Path.Combine(Application.persistentDataPath, $"Logs/{sessionName}.zip"),
-            File.ReadAllBytes(screenshotPath),
-            $"Logs/screenshot_{now.ToString().Replace(" ", "").Replace(":", "-")}.png"
-        );
-        Dictionary<string, string> logData = new Dictionary<string, string>
-        {
-            { "screenshotPath", newScreenshotPath }
-        };
-
+        return stepHandler.getCurrentStep().Video;
     }
+
 }

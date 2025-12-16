@@ -14,6 +14,7 @@ public class ConnectPresenter : MonoBehaviour
     public event ConnectionStateChange ConnectionStateChanged;
     private WebSocketClientUsecase _websocketusecase;
     private WebSocketStreamingClientUsecase _streamingusecase;
+    private DocumentationUseCase _documentationUseCase;
 
     [Inject]
     private readonly IDocumentationLogger logger;
@@ -27,7 +28,7 @@ public class ConnectPresenter : MonoBehaviour
     [Inject]
     void Awake()
     {
-        _connectUseCase = new ConnectUseCase(logger);
+        _documentationUseCase= new DocumentationUseCase(logger);
         _websocketusecase = new WebSocketClientUsecase(_service);
         _streamingusecase = new WebSocketStreamingClientUsecase(_streamingService, _service);
     }
@@ -42,14 +43,14 @@ public class ConnectPresenter : MonoBehaviour
     {
         _connectUseCase.Connect(ip, port);
         _websocketusecase.Connect(ip, "8080");
-        _connectUseCase.loggerSetup(Application.persistentDataPath);
+        _documentationUseCase.loggerSetup(Application.persistentDataPath);
     }
 
     public void StartHost(string ip, string port)
     {
         _connectUseCase.StartHost(ip, port);
         _websocketusecase.Connect(ip, "8080");
-        _connectUseCase.loggerSetup(Application.persistentDataPath);
+        _documentationUseCase.loggerSetup(Application.persistentDataPath);
     }
 
     public void SetToOnline(INetworkManager manager)
