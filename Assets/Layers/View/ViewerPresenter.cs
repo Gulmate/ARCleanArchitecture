@@ -6,7 +6,7 @@ public class ViewerPresenter
 
 
     [Inject]
-    public ViewerPresenter(IDocumentationLogger logger, CustomNetworkManager networkManager)
+    public ViewerPresenter(IDocumentationLogger logger, INetworkManager networkManager)
     {
         useCase = new ViewerUseCase(logger, networkManager);
     }

@@ -52,7 +52,7 @@ public class ConnectPresenter : MonoBehaviour
         _connectUseCase.loggerSetup(Application.persistentDataPath);
     }
 
-    public void SetToOnline(CustomNetworkManager manager)
+    public void SetToOnline(INetworkManager manager)
     {
         _connectUseCase.SetToOnline(manager);
     }

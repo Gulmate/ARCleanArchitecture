@@ -15,7 +15,7 @@ public class ConnectScope: LifetimeScope
 
         builder.RegisterComponentOnNewGameObject<ConnectPresenter>(Lifetime.Scoped, "ConnectPresenter");
 
-        builder.RegisterComponentInNewPrefab(networkManagerPrefab, Lifetime.Singleton);
+        builder.RegisterComponentInNewPrefab(networkManagerPrefab, Lifetime.Singleton).AsImplementedInterfaces();
 
         
     }

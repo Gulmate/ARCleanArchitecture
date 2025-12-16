@@ -1,9 +1,8 @@
-﻿using Mirror;
-using System;
+﻿using System;
 
 public class ConnectUseCase
 {
-    private CustomNetworkManager _networkManager;
+    private INetworkManager _networkManager;
     private readonly IDocumentationLogger _documentationLogger;
     string sessionName;
     public ConnectUseCase(IDocumentationLogger logger)
@@ -20,7 +19,7 @@ public class ConnectUseCase
         _networkManager.StartServerFromInput(ip, port);
     }
 
-    public void SetToOnline(CustomNetworkManager networkManager)
+    public void SetToOnline(INetworkManager networkManager)
     {
         _networkManager = networkManager;
     }

@@ -21,7 +21,7 @@ public class ConnectView : MonoBehaviour
     [Inject]
     private readonly ConnectPresenter _connectPresenter;
 
-    private CustomNetworkManager _networkManager;
+    private INetworkManager _networkManager;
 
     [Inject]
     private readonly IObjectResolver _resolver;
@@ -58,7 +58,7 @@ public class ConnectView : MonoBehaviour
         {
             changePanel.SetActive(false);
             onlinePanel.SetActive(true);
-            _networkManager = _resolver.Resolve<CustomNetworkManager>();
+            _networkManager = _resolver.Resolve<INetworkManager>();
             _connectPresenter.SetToOnline(_networkManager);
         });
         offlineButton.onClick.AddListener(() =>

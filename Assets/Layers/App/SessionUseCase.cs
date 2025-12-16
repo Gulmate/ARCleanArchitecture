@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class SessionUseCase
 {
     private IDocumentationLogger logger;
-    private CustomNetworkManager networkManager;
+    private INetworkManager networkManager;
 
-    public SessionUseCase(IDocumentationLogger logger, CustomNetworkManager networkManager)
+    public SessionUseCase(IDocumentationLogger logger,INetworkManager networkManager)
     {
         this.logger = logger;
         this.networkManager = networkManager;

@@ -9,7 +9,7 @@ public class ConnectionScope : LifetimeScope
         var networkManager = FindFirstObjectByType<CustomNetworkManager>();
         if (networkManager != null)
         {
-            builder.RegisterComponent(networkManager);
+            builder.RegisterComponent(networkManager).AsImplementedInterfaces();
         }
 
         builder.Register<SessionPresenter>(Lifetime.Scoped).AsSelf();

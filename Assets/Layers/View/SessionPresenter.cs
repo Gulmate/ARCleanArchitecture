@@ -8,7 +8,7 @@ public class SessionPresenter
     private WebSocketStreamingClientUsecase _streamingusecase;
 
     [Inject]
-    public SessionPresenter(IDocumentationLogger logger, CustomNetworkManager networkManager, WebSocketStreamingClientService streamingService, WebSocketClientService service)
+    public SessionPresenter(IDocumentationLogger logger, INetworkManager networkManager, WebSocketStreamingClientService streamingService, WebSocketClientService service)
     {
         useCase = new SessionUseCase(logger, networkManager);
         _streamingusecase = new WebSocketStreamingClientUsecase(streamingService, service);
