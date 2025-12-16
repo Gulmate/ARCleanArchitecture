@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
+using WebSocketSharp;
 
 public class ConnectView : MonoBehaviour
 {
@@ -29,11 +30,29 @@ public class ConnectView : MonoBehaviour
     {
         connectButton.onClick.AddListener(() =>
         {
-            _connectPresenter.Connect(IPField.text, PortField.text);
+            string ipAddress;
+            if (string.IsNullOrWhiteSpace(IPField.text))
+            {
+                ipAddress = "localhost";
+            }else
+            {
+                ipAddress = IPField.text;
+            }
+            _connectPresenter.Connect(ipAddress, PortField.text);
         });
         hostButton.onClick.AddListener(() =>
         {
-            _connectPresenter.StartHost(IPField.text, PortField.text);
+            string ipAddress;
+            if (string.IsNullOrWhiteSpace(IPField.text))
+            {
+                ipAddress = "localhost";
+            }
+            else
+            {
+                ipAddress = IPField.text;
+            }
+            Debug.Log("Starting host at IP: " + ipAddress + " Port: " + PortField.text);
+            _connectPresenter.StartHost(ipAddress, PortField.text);
         });
         onlineButton.onClick.AddListener(() =>
         {
@@ -46,5 +65,34 @@ public class ConnectView : MonoBehaviour
         {
             _connectPresenter.ChangeToOfflineScene();
         });
+
+
+    }
+
+    public void ConnectionStateChange(WebSocketState state)
+    {
+        switch (state)
+        {
+            case WebSocketState.Connecting:
+                IPField.interactable = false;
+                PortField.interactable = false;
+                connectButton.interactable = false;
+                break;
+            case WebSocketState.Closed:
+                IPField.interactable = true;
+                PortField.interactable = true;
+                connectButton.interactable = true;
+                break;
+            case WebSocketState.Closing:
+                IPField.interactable = false;
+                PortField.interactable = false;
+                connectButton.interactable = false;
+                break;
+            default:
+                IPField.interactable = false;
+                PortField.interactable = false;
+                connectButton.interactable = false;
+                break;
+        }
     }
 }

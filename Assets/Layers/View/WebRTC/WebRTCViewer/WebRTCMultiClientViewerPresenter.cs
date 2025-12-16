@@ -20,7 +20,7 @@ public class WebRTCMultiClientViewerPresenter : MonoBehaviour
     [Inject]
     void Awake()
     {
-        _usecase = new WebRTCMultiClientViewingUsecase(_webSocketClientService, _webSocketStreamingClientService, _webRTCViewerMessageHandlerService);
+        
     }
 
     public event VideoStreamReceivedHandler VideoStreamReceived;
@@ -28,6 +28,7 @@ public class WebRTCMultiClientViewerPresenter : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _usecase = new WebRTCMultiClientViewingUsecase(_webSocketClientService, _webSocketStreamingClientService, _webRTCViewerMessageHandlerService);
         _mainThreadContext = SynchronizationContext.Current;
         _usecase.OnVideoStreamReceived(OnVideoStreamReceived);
         _usecase.OnDebugMessageReceived(Log);

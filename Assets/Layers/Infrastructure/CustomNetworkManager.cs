@@ -207,12 +207,12 @@ public class CustomNetworkManager : NetworkManager, INetworkManager
 
     public void ChangeSceneToStream()
     {
-        SceneManager.LoadScene("Scenes/ARClient");
+        SceneManager.LoadScene("WebRTCMultiClientStreamerScene");
     }
 
     public void ChangeSceneToView()
     {
-        SceneManager.LoadScene("Scenes/ViewerClient");
+        SceneManager.LoadScene("WebRTCMultiClientViewerScene");
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)

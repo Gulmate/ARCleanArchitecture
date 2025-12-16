@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -10,6 +9,8 @@ public class SessionView: MonoBehaviour
 
     [SerializeField]
     private Button streamButton;
+    [SerializeField]
+    private Button refreshButton;
 
     [SerializeField]
     private GameObject ListContent;
@@ -17,17 +18,28 @@ public class SessionView: MonoBehaviour
     [SerializeField]
     private GameObject sessionItemPrefab;
 
+
     public void Start()
     {
         streamButton.onClick.AddListener(() => { _sessionPresenter.ChangeToStream(); });
-        foreach(SessionInfo session in _sessionPresenter.UpdateSessionList())
+        
+        refreshButton.onClick.AddListener(() => 
         {
-            var listItem=Instantiate(sessionItemPrefab, ListContent.transform);
+            RefreshList();
+        });
+        RefreshList();
+    }
+
+    private void RefreshList()
+    {
+        foreach (SessionInfo session in _sessionPresenter.UpdateSessionList())
+        {
+            var listItem = Instantiate(sessionItemPrefab, ListContent.transform);
             Debug.Log(session.sessionName);
-            var itemView=listItem.GetComponent<SessionListItemView>();
-            itemView.sessionNameText.text=session.sessionName;
-            itemView.viewCountText.text=session.numberOfViewers.ToString();
-            itemView.joinButton.onClick.AddListener(() => 
+            var itemView = listItem.GetComponent<SessionListItemView>();
+            itemView.sessionNameText.text = session.sessionName;
+            itemView.viewCountText.text = session.numberOfViewers.ToString();
+            itemView.joinButton.onClick.AddListener(() =>
             {
                 _sessionPresenter.ChangeToView(session.sessionId);
             });

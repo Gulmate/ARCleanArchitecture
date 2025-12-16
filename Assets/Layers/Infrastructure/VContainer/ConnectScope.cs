@@ -10,6 +10,9 @@ public class ConnectScope: LifetimeScope
     {
         builder.RegisterComponentInHierarchy<ConnectView>();
 
+        builder.Register<WebSocketClientService>(Lifetime.Scoped);
+        builder.Register<WebSocketStreamingClientService>(Lifetime.Scoped);
+
         builder.RegisterComponentOnNewGameObject<ConnectPresenter>(Lifetime.Scoped, "ConnectPresenter");
 
         builder.RegisterComponentInNewPrefab(networkManagerPrefab, Lifetime.Singleton);
