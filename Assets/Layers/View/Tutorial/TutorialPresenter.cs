@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,6 +21,8 @@ public class TutorialPresenter : MonoBehaviour
     private int currentImageIndex = 0;
 
     private string audioPath;
+
+    public event Action<MarkerData> MarkerFound;
 
     void Start()
     {
@@ -139,12 +143,6 @@ public class TutorialPresenter : MonoBehaviour
         return tutorialUseCase.GetCurrentStepAudio();
     }
 
-    public void AddImageToDetect()
-    {
-        //Idekerül a kep hozzadas logika
-        //detectUseCase.AddImage(byte[]);
-    }
-
 
     public string GetText()
     {
@@ -182,6 +180,45 @@ public class TutorialPresenter : MonoBehaviour
 
     public void InitUseCase(ARTrackedImageManager imageTrackingManager, XRReferenceImageLibrary serializedLibrary)
     {
-        detectUseCase = new DetectUseCase(new TargetImageHandler(imageTrackingManager, serializedLibrary));
+        var targetImageHandler = new TargetImageHandler(imageTrackingManager, serializedLibrary);
+        targetImageHandler.MarkerAdded += OnImageDetect;
+        detectUseCase = new DetectUseCase(targetImageHandler);
+        
+    }
+
+    public void AddImageToDetection()
+    {
+        StartCoroutine(AddImageWhenARSessionReady());
+    }
+
+    private IEnumerator AddImageWhenARSessionReady()
+    {
+        Debug.Log($"Waiting for AR Session to be ready. Current state: {ARSession.state}");
+
+        // Wait until AR session is initializing or tracking
+        while (ARSession.state != ARSessionState.SessionInitializing &&
+               ARSession.state != ARSessionState.SessionTracking)
+        {
+            Debug.Log($"AR Session not ready yet. Current state: {ARSession.state}");
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        Debug.Log($"AR Session is ready! State: {ARSession.state}");
+
+        // Now add the image
+        byte[] imageData = File.ReadAllBytes(Application.persistentDataPath + "/marker.png");
+        detectUseCase.AddImage(imageData);
+        StartDetection();
+    }
+
+    public void StartDetection()
+    {
+        detectUseCase.StartDetection();
+    }
+
+    public void OnImageDetect(MarkerData markerData)
+    {
+        Debug.Log("Marker detected: " + markerData.Name);
+        MarkerFound?.Invoke(markerData);
     }
 }

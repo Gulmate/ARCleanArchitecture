@@ -8,6 +8,8 @@ using VContainer;
 
 public class TutorialView : MonoBehaviour
 {
+    [SerializeField] private GameObject canvas;
+
     [SerializeField] private TextMeshProUGUI stepNumberText;
     [SerializeField] private Button prevStepButton;
     [SerializeField] private Button nextStepButton;
@@ -40,6 +42,7 @@ public class TutorialView : MonoBehaviour
 
     private TutorialPresenter presenter;
 
+
     [Inject]
     public void Construct(TutorialPresenter injectedPresenter)
     {
@@ -49,132 +52,9 @@ public class TutorialView : MonoBehaviour
 
     void Start()
     {
-        prevStepButton.onClick.AddListener(() =>
-        {
-            
-            presenter.PrevStep();
-            tutorialText.text = presenter.GetText();
-            CheckContent();
-            ActivateText();
-            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
-            tutorialText.text = presenter.GetText();
-        });
-        nextStepButton.onClick.AddListener(() =>
-        {
-            presenter.NextStep();
-            tutorialText.text = presenter.GetText();
-            CheckContent();
-            ActivateText();
-            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
-            tutorialText.text = presenter.GetText();
-        });
-        loadButton.onClick.AddListener(() =>
-        {
-            Step first=presenter.LoadTutorial(Application.persistentDataPath + "/Saves/kavefozo.zip");
-            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
-            tutorialText.text = first.Text;
-            CheckContent();
-        });
-
-        TextButton.onClick.AddListener(() =>
-        {
-            ActivateText();
-            tutorialText.text = presenter.GetText();
-        });
-
-
-        imageButton.onClick.AddListener(() =>
-        {
-            Texture2D tex = presenter.GetCurrentPic();
-            
-            ActivateImage();
-            if (tex != null)
-            {
-                tutorialImage.texture = tex;
-            }
-            tutorialImage.texture = tex;
-            if(!presenter.HasNextImage())
-            {
-                nextImageButton.interactable=false;
-            }else
-            {
-                nextImageButton.interactable=true;
-            }
-            if (!presenter.HasPrevImage())
-            {
-                prevImageButton.interactable = false;
-            }else
-            {
-                prevImageButton.interactable = true;
-            }
-
-        });
-        nextImageButton.onClick.AddListener(() =>
-        {
-            Texture2D tex = presenter.GetNextPic();
-            if (tex != null)
-            {
-                tutorialImage.texture = tex;
-            }
-            tutorialImage.texture = tex;
-            if(!presenter.HasNextImage())
-            {
-                nextImageButton.interactable=false;
-            }
-            if(presenter.HasPrevImage())
-            {
-                prevImageButton.interactable=true;
-            }
-        });
-        prevImageButton.onClick.AddListener(() =>
-        {
-            Texture2D tex = presenter.GetPrevPic();
-            if (tex != null)
-            {
-                tutorialImage.texture = tex;
-            }
-            tutorialImage.texture = tex;
-            if(!presenter.HasPrevImage())
-            {
-                prevImageButton.interactable=false;
-            }
-            if(presenter.HasNextImage())
-            {
-                nextImageButton.interactable=true;
-            }
-        });
-
-        
-        videoButton.onClick.AddListener(() => 
-        { 
-            ActivateVideo();
-            videoPlayer.url = presenter.GetVideo();
-        });
-        playVideoButton.onClick.AddListener(() => { videoPlayer.Play(); });
-        pauseVideoButton.onClick.AddListener(() => { videoPlayer.Pause(); });
-        restartVideoButton.onClick.AddListener(() => { videoPlayer.time = 0; });
-
-
-        audioButton.onClick.AddListener(async () => 
-        {  
-            ActivateAudio();
-            audioSource.clip= await presenter.GetAudio(); 
-        });
-        playAudioButton.onClick.AddListener(() => { audioSource.Play(); });
-        pauseAudioButton.onClick.AddListener(() => { audioSource.Pause(); });
-        restartAudioButton.onClick.AddListener(() => { audioSource.time = 0; });
-
-        TextButton.onClick.AddListener(() =>
-        {
-            ActivateText();
-            tutorialText.text = presenter.GetText();
-        });
-
-        presenter.InitUseCase(imageTrackingManager,serializedLibrary);
-
-        UnactivateAudio();
-        UnactivateVideo();
-        UnactivateImage();
+        presenter.InitUseCase(imageTrackingManager, serializedLibrary);
+        presenter.MarkerFound += SpawnCanvas;
+        presenter.AddImageToDetection();
     }
 
     public void UnactivateAudio()
@@ -292,5 +172,147 @@ public class TutorialView : MonoBehaviour
         {
             nextStepButton.interactable = true;
         }
+    }
+
+    private void SpawnCanvas(MarkerData data)
+    {
+        Debug.Log("Marker found: " + data.Name);
+        canvas.SetActive(true);
+        Vector3 markerPosition = new Vector3(data.XCord, data.YCord, data.ZCord);
+        Vector3 toCamera = Camera.main.transform.position - markerPosition;
+        toCamera.Normalize();
+
+        canvas.transform.position = markerPosition + (toCamera * 0.3f);
+        canvas.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+
+        canvas.transform.LookAt(Camera.main.transform);
+        canvas.transform.Rotate(0, 180, 0);
+
+        prevStepButton.onClick.AddListener(() =>
+        {
+
+            presenter.PrevStep();
+            tutorialText.text = presenter.GetText();
+            CheckContent();
+            ActivateText();
+            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
+            tutorialText.text = presenter.GetText();
+        });
+        nextStepButton.onClick.AddListener(() =>
+        {
+            presenter.NextStep();
+            tutorialText.text = presenter.GetText();
+            CheckContent();
+            ActivateText();
+            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
+            tutorialText.text = presenter.GetText();
+        });
+        loadButton.onClick.AddListener(() =>
+        {
+            Step first = presenter.LoadTutorial(Application.persistentDataPath + "/Saves/kavefozo.zip");
+            stepNumberText.text = "Step " + presenter.GetCurrentStepNumber().ToString();
+            tutorialText.text = first.Text;
+            CheckContent();
+        });
+
+        TextButton.onClick.AddListener(() =>
+        {
+            ActivateText();
+            tutorialText.text = presenter.GetText();
+        });
+
+
+        imageButton.onClick.AddListener(() =>
+        {
+            Texture2D tex = presenter.GetCurrentPic();
+
+            ActivateImage();
+            if (tex != null)
+            {
+                tutorialImage.texture = tex;
+            }
+            tutorialImage.texture = tex;
+            if (!presenter.HasNextImage())
+            {
+                nextImageButton.interactable = false;
+            }
+            else
+            {
+                nextImageButton.interactable = true;
+            }
+            if (!presenter.HasPrevImage())
+            {
+                prevImageButton.interactable = false;
+            }
+            else
+            {
+                prevImageButton.interactable = true;
+            }
+
+        });
+        nextImageButton.onClick.AddListener(() =>
+        {
+            Texture2D tex = presenter.GetNextPic();
+            if (tex != null)
+            {
+                tutorialImage.texture = tex;
+            }
+            tutorialImage.texture = tex;
+            if (!presenter.HasNextImage())
+            {
+                nextImageButton.interactable = false;
+            }
+            if (presenter.HasPrevImage())
+            {
+                prevImageButton.interactable = true;
+            }
+        });
+        prevImageButton.onClick.AddListener(() =>
+        {
+            Texture2D tex = presenter.GetPrevPic();
+            if (tex != null)
+            {
+                tutorialImage.texture = tex;
+            }
+            tutorialImage.texture = tex;
+            if (!presenter.HasPrevImage())
+            {
+                prevImageButton.interactable = false;
+            }
+            if (presenter.HasNextImage())
+            {
+                nextImageButton.interactable = true;
+            }
+        });
+
+
+        videoButton.onClick.AddListener(() =>
+        {
+            ActivateVideo();
+            videoPlayer.url = presenter.GetVideo();
+        });
+        playVideoButton.onClick.AddListener(() => { videoPlayer.Play(); });
+        pauseVideoButton.onClick.AddListener(() => { videoPlayer.Pause(); });
+        restartVideoButton.onClick.AddListener(() => { videoPlayer.time = 0; });
+
+
+        audioButton.onClick.AddListener(async () =>
+        {
+            ActivateAudio();
+            audioSource.clip = await presenter.GetAudio();
+        });
+        playAudioButton.onClick.AddListener(() => { audioSource.Play(); });
+        pauseAudioButton.onClick.AddListener(() => { audioSource.Pause(); });
+        restartAudioButton.onClick.AddListener(() => { audioSource.time = 0; });
+
+        TextButton.onClick.AddListener(() =>
+        {
+            ActivateText();
+            tutorialText.text = presenter.GetText();
+        });
+
+        UnactivateAudio();
+        UnactivateVideo();
+        UnactivateImage();
     }
 }
