@@ -117,7 +117,7 @@ public class TutorialPresenter : MonoBehaviour
     public async Task<AudioClip> GetAudio()
     {
         audioPath=GetAudioPath();
-        string url = Path.Combine("file://", audioPath);
+        string url = Path.Combine("file:/", audioPath);
 
         using (var audioRequest = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
         {

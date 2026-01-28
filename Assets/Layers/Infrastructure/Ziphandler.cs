@@ -25,10 +25,11 @@ public class Ziphandler : IZiphandler
 
     }
 
+    //Kell jobb kicsomagolas
     private Step LoadStepFromFolder(IGrouping<string, ZipArchiveEntry> stepFolder, string zipPath)
     {
         var step = new Step();
-
+        var dir=zipPath.Remove(zipPath.Length - "/kavefozo.zip".Length);
         foreach (var entry in stepFolder)
         {
             if (entry.FullName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
@@ -39,12 +40,24 @@ public class Ziphandler : IZiphandler
 
             if (entry.FullName.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
             {
-                step.Audio = Path.Combine(zipPath, entry.FullName);
+                string stepdir=entry.FullName.Remove(entry.FullName.Length - entry.Name.Length);
+                if (!Directory.Exists(Path.Combine(dir,stepdir)))
+                {
+                    Directory.CreateDirectory(Path.Combine(dir, stepdir));
+                }
+                entry.ExtractToFile(Path.Combine(dir, entry.FullName), true);
+                step.Audio = Path.Combine(dir, entry.FullName);
             }
 
             if (entry.FullName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
-                step.Video = Path.Combine(zipPath, entry.FullName);
+                string stepdir = entry.FullName.Remove(entry.FullName.Length - entry.Name.Length);
+                if (!Directory.Exists(Path.Combine(dir, stepdir)))
+                {
+                    Directory.CreateDirectory(Path.Combine(dir, stepdir));
+                }
+                entry.ExtractToFile(Path.Combine(dir, entry.FullName), true);
+                step.Video = Path.Combine(dir, entry.FullName);
             }
 
             if (entry.FullName.EndsWith("txt", StringComparison.OrdinalIgnoreCase))

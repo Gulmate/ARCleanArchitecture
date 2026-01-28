@@ -176,17 +176,22 @@ public class TutorialView : MonoBehaviour
 
     private void SpawnCanvas(MarkerData data)
     {
-        Debug.Log("Marker found: " + data.Name);
         canvas.SetActive(true);
+
         Vector3 markerPosition = new Vector3(data.XCord, data.YCord, data.ZCord);
-        Vector3 toCamera = Camera.main.transform.position - markerPosition;
-        toCamera.Normalize();
 
-        canvas.transform.position = markerPosition + (toCamera * 0.3f);
-        canvas.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        GameObject anchorGO = new GameObject("CanvasAnchor");
+        anchorGO.transform.position = markerPosition;
 
-        canvas.transform.LookAt(Camera.main.transform);
-        canvas.transform.Rotate(0, 180, 0);
+        anchorGO.transform.LookAt(Camera.main.transform);
+        anchorGO.transform.Rotate(0, 180, 0);
+
+        var anchor = anchorGO.AddComponent<ARAnchor>();
+
+        canvas.transform.SetParent(anchor.transform, false);
+
+        canvas.transform.localPosition = Vector3.zero;
+        canvas.transform.localRotation = Quaternion.identity;
 
         prevStepButton.onClick.AddListener(() =>
         {

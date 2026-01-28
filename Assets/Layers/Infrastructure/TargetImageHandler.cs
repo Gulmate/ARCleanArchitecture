@@ -82,29 +82,52 @@ public class TargetImageHandler : ITargetImageHandler
         return markerData;
     }
 
+    private bool markerPlaced = false;
+
     private void OnChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
-        foreach (var newImage in eventArgs.added)
+        if (markerPlaced)
         {
-            markerData = new MarkerData
-            {
-                Name = newImage.referenceImage.name,
-                XCord = newImage.transform.position.x,
-                YCord = newImage.transform.position.y,
-                ZCord = newImage.transform.position.z
-            };
-            Debug.Log($"Marker detected: {markerData.Name} at ({markerData.XCord}, {markerData.YCord}, {markerData.ZCord})");
-            MarkerAdded?.Invoke(markerData);
+            return;
         }
 
-        foreach (var updatedImage in eventArgs.updated)
+        foreach (var image in eventArgs.added)
         {
-            // Ha kell változást követni
+            TryEmit(image);
+        }
+            
+
+        foreach (var image in eventArgs.updated)
+        {
+            TryEmit(image);
+        }
+    }
+
+    private void TryEmit(ARTrackedImage image)
+    {
+        if (markerPlaced)
+        {
+            return;
         }
 
-        foreach (var removedImage in eventArgs.removed)
+        if (image.trackingState != TrackingState.Tracking)
         {
-            // Ha kell törlést követni
+            return;
         }
+
+        markerPlaced = true;
+        
+
+        markerData = new MarkerData
+        {
+            Name = image.referenceImage.name,
+            XCord = image.transform.position.x,
+            YCord = image.transform.position.y,
+            ZCord = image.transform.position.z
+        };
+
+        MarkerAdded?.Invoke(markerData);
+        StopDetection();
+        //imageManager.enabled = false;
     }
 }
