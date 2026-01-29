@@ -127,7 +127,7 @@ public class TargetImageHandler : ITargetImageHandler
         };
 
         MarkerAdded?.Invoke(markerData);
-        StopDetection();
+        //StopDetection();
         //imageManager.enabled = false;
     }
 }
