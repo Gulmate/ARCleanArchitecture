@@ -22,7 +22,7 @@ public class TutorialPresenter : MonoBehaviour
 
     private string audioPath;
 
-    public event Action<MarkerData> MarkerFound;
+    public event Action<ARTrackedImage, MarkerData> MarkerFound;
 
     void Start()
     {
@@ -226,9 +226,9 @@ public class TutorialPresenter : MonoBehaviour
         detectUseCase.StartDetection();
     }
 
-    public void OnImageDetect(MarkerData markerData)
+    public void OnImageDetect(ARTrackedImage trackedImage, MarkerData markerData)
     {
         Debug.Log("Marker detected: " + markerData.Name);
-        MarkerFound?.Invoke(markerData);
+        MarkerFound?.Invoke(trackedImage, markerData);
     }
 }

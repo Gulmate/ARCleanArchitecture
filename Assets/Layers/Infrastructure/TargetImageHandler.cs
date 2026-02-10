@@ -14,7 +14,7 @@ public class TargetImageHandler : ITargetImageHandler
     private MarkerData markerData;
     private bool detectRuning = false;
 
-    public event Action<MarkerData> MarkerAdded;
+    public Action<ARTrackedImage, MarkerData> MarkerAdded;
 
     public TargetImageHandler(ARTrackedImageManager trackedImageManager, XRReferenceImageLibrary mutableLibrary)
     {
@@ -126,7 +126,7 @@ public class TargetImageHandler : ITargetImageHandler
             ZCord = image.transform.position.z
         };
 
-        MarkerAdded?.Invoke(markerData);
+        MarkerAdded?.Invoke(image, markerData);
         //StopDetection();
         //imageManager.enabled = false;
     }

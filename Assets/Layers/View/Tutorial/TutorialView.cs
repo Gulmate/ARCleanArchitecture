@@ -174,25 +174,19 @@ public class TutorialView : MonoBehaviour
         }
     }
 
-    private void SpawnCanvas(MarkerData data)
+    private void SpawnCanvas(ARTrackedImage trackedImage, MarkerData data)
     {
         canvas.SetActive(true);
 
-        Vector3 markerPosition = new Vector3(data.XCord, data.YCord, data.ZCord);
-
-        GameObject anchorGO = new GameObject("CanvasAnchor");
-        anchorGO.transform.position = markerPosition;
-
-        anchorGO.transform.LookAt(Camera.main.transform);
-        anchorGO.transform.Rotate(0, 180, 0);
-
-        var anchor = anchorGO.AddComponent<ARAnchor>();
-
-        canvas.transform.SetParent(anchor.transform, false);
+        canvas.transform.SetParent(trackedImage.transform, false);
 
         canvas.transform.localPosition = Vector3.zero;
         canvas.transform.localRotation = Quaternion.identity;
 
+        canvas.transform.LookAt(Camera.main.transform);
+        canvas.transform.Rotate(0, 180, 0);
+
+        Debug.Log("Canvas attached to tracked image successfully.");
         prevStepButton.onClick.AddListener(() =>
         {
 
