@@ -116,8 +116,18 @@ public class TutorialPresenter : MonoBehaviour
 
     public async Task<AudioClip> GetAudio()
     {
+        
         audioPath=GetAudioPath();
-        string url = Path.Combine("file://", audioPath);
+
+        string url = audioPath;
+        if (!url.StartsWith("file://"))
+        {
+            url = "file://" + audioPath;
+        }
+
+        string escapedUrl = Uri.EscapeUriString(url);
+
+        Debug.Log($"Attempting to load: {escapedUrl}");
 
         using (var audioRequest = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
         {
